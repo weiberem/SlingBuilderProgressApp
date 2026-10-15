@@ -18,7 +18,7 @@ Offene Entscheidungen stehen in `docs/rueckfragen.md`.
 | Hintergrundjobs | Eigener Prozess **`worker`** (gleiches Repo, gleicher Code) mit **pg-boss 12** auf PostgreSQL | PDF-Import, OCR, Dropbox→Drive-Sync und Mail-Sync laufen nie im Request. pg-boss braucht **kein Redis**, das vereinfacht Hosting und Backup. |
 | Datenbank | **PostgreSQL 16** | Vorgabe. Eine Datenbank für Fachdaten und Job-Queue. |
 | ORM / Migrationen | **Drizzle ORM 0.45 + drizzle-kit** | Migrationen sind versionierte, lesbare SQL-Dateien (prüfbar, auditierbar). Drizzle läuft gegen PostgreSQL und gegen PGlite (Tests ohne Docker). Prisma wäre ebenfalls möglich; Drizzle ist SQL-näher, leichter im Container und braucht keinen Query-Engine-Prozess. |
-| Auth | Eigene Session-Auth nach dem Lucia-Muster: **argon2id** (`@node-rs/argon2`), DB-Sessions, HttpOnly-Cookies, Rate-Limit in Postgres | Credentials-Login mit DB-Sessions ist mit Auth.js nur umständlich möglich (Credentials-Provider = JWT-Sessions). Lucia ist seit 2025 eine Anleitung, keine Bibliothek mehr; deren Muster ist klein, geprüft und ohne Abhängigkeiten. OAuth nur für Integrationen (Bibliothek `arctic`). |
+| Auth | Eigene Session-Auth nach dem Lucia-Muster: **argon2id** (`@node-rs/argon2`), DB-Sessions, HttpOnly-Cookies, Rate-Limit in Postgres | Credentials-Login mit DB-Sessions ist mit Auth.js nur umständlich möglich (Credentials-Provider = JWT-Sessions). Lucia ist seit 2025 eine Anleitung, keine Bibliothek mehr; deren Muster ist klein, geprüft und ohne Abhängigkeiten. OAuth für Integrationen (Google, Microsoft, Dropbox) als eigener, kleiner Authorization-Code-Flow mit PKCE (`node:crypto`); die Bibliotheken `arctic` und `@oslojs/*` sind seit 2026 abgekündigt und werden nicht verwendet. |
 | i18n | **next-intl 4**, Texte in `messages/de.json`; `en`/`fr` als leere Strukturen vorbereitet. Stammdaten-Labels als JSON `{de,en,fr}` | Keine Texte im Code. |
 | UI | Tailwind CSS 4, eigene kleine Komponenten, Design-Tokens in `src/styles/tokens.css` | Design nach Sling Aircraft Switzerland (siehe 9). Grosse Touch-Ziele. |
 | PWA / Offline | Web-App-Manifest, Service Worker (Serwist-Runtime, separat mit esbuild gebündelt), **Offline-Warteschlange in IndexedDB (Dexie)**, idempotenter Sync-Endpunkt | Abhaken im Hangar ohne Netz; Synchronisation später. |
@@ -26,7 +26,7 @@ Offene Entscheidungen stehen in `docs/rueckfragen.md`.
 | Hosting | Docker Compose (`web`, `worker`, `db`, `caddy`, `backup`) | Lokal und auf einem kleinen VPS identisch. Datenstandort frei wählbar (CH/EU). |
 | Tests | Vitest (Engines, Services gegen PGlite/Postgres), Playwright (Onboarding, Abhaken) | Kritische Logik = Applicability, Alias, Revisions-Mapping. |
 
-Next.js 16 wird **ohne** `cacheComponents` betrieben (klassisches, pro Request dynamisches Rendering), weil die App vollständig privat und datengetrieben ist. `middleware.ts` heisst in Next 16 `proxy.ts` und macht nur den optimistischen Cookie-Check; die echte Autorisierung passiert in der Datenzugriffsschicht.
+Next.js 16 wird **ohne** `cacheComponents` betrieben (klassisches, pro Request dynamisches Rendering), weil die App vollständig privat und datengetrieben ist. Next 17 wird «Cache Components» voraussichtlich verbindlich machen; die Migration (Suspense-Grenzen um dynamische Daten, `loading.tsx`) ist ein eigener, späterer Schritt und ändert keine Fachlogik. `middleware.ts` heisst in Next 16 `proxy.ts` und macht nur den optimistischen Cookie-Check; die echte Autorisierung passiert in der Datenzugriffsschicht.
 
 ---
 
