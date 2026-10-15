@@ -1,0 +1,98 @@
+{
+  "manuals": {
+    "title": "Stammdaten: Handbücher",
+    "intro": "Flugzeugmodelle, Handbücher und Revisionen. Nur freigegebene Revisionen sind für Erbauer sichtbar. Regeln aus dem Import wirken erst nach Bestätigung.",
+    "model": "Modell",
+    "inactive": "inaktiv",
+    "manuals": "{count, plural, =1 {1 Handbuch} other {# Handbücher}}",
+    "noDocNumber": "ohne Dokumentnummer",
+    "assemblyGroup": "Baugruppe",
+    "kind": {
+      "kai": "KAI",
+      "intro": "Einführung",
+      "supplement": "Ergänzung"
+    },
+    "revision": "Revision {revision}",
+    "noRevisions": "Keine Revisionen erfasst.",
+    "status": {
+      "draft": "Entwurf",
+      "in_review": "in Prüfung",
+      "released": "freigegeben"
+    },
+    "revisionDate": "Datum",
+    "coverLabel": "Deckblatt",
+    "dateUnknown": "Datum ungeklärt",
+    "pageCount": "Bauseiten",
+    "pageCountUnknown": "noch nicht erfasst",
+    "pagesInDb": "{count, plural, =1 {1 Seite in der Datenbank} other {# Seiten in der Datenbank}}",
+    "sections": "{count, plural, =0 {keine Abschnitte} =1 {1 Abschnitt} other {# Abschnitte}}",
+    "untitledSections": "{count, plural, =1 {1 ohne Titel} other {# ohne Titel}}",
+    "source": "Quelldatei",
+    "sourceUnknown": "keine Quelldatei erfasst",
+    "hash": "SHA-256",
+    "released": "freigegeben am {date}",
+    "notes": "Notizen",
+    "report": {
+      "title": "Import-Bericht",
+      "notes": "{count, plural, =0 {keine Hinweise} =1 {1 Hinweis} other {# Hinweise}}",
+      "conflicts": "{count, plural, =0 {keine Konflikte} =1 {1 Konflikt} other {# Konflikte}}",
+      "pages": "Seiten {pages}",
+      "resolved": "gelöst",
+      "open": "offen"
+    },
+    "pageCountForm": {
+      "title": "Anzahl Bauseiten erfassen",
+      "hint": "Für Revisionen ohne erfasste Abschnitte (z. B. vor der OCR): legt Seiten 1–n ohne Titel an, damit sie abgehakt werden können. Seiten mit Status werden nie gelöscht.",
+      "label": "Anzahl Bauseiten (1–400)",
+      "submit": "Seitenzahl speichern",
+      "saved": "Seitenzahl gespeichert."
+    },
+    "rules": {
+      "title": "Regeln",
+      "none": "Keine Regeln für diese Revision.",
+      "summary": "{confirmed} bestätigt · {unconfirmed} unbestätigt",
+      "page": "Seite {number}",
+      "section": "Abschnitt «{title}» (S. {from}–{to})",
+      "missing": "Ziel fehlt",
+      "effect": {
+        "applies_only_if": "gilt nur wenn",
+        "qb_prebuilt": "Quick Build: ab Werk"
+      },
+      "confirmed": "bestätigt",
+      "unconfirmed": "unbestätigt (wirkt nicht, Seite «Variante klären»)",
+      "confirm": "Bestätigen",
+      "unconfirm": "Bestätigung zurückziehen",
+      "source": "Im Handbuch",
+      "rationale": "Begründung",
+      "expression": "Ausdruck",
+      "confirmedBy": "bestätigt am {date}"
+    },
+    "aliases": {
+      "title": "Aliase",
+      "none": "Keine Aliase.",
+      "scope": {
+        "model": "Modell",
+        "manual": "Handbuch",
+        "revision": "Revision"
+      },
+      "kind": {
+        "typo": "Schreibfehler",
+        "term": "Begriff",
+        "engine": "Motor",
+        "type_header": "Typkopf"
+      },
+      "regex": "Regex",
+      "inactive": "inaktiv",
+      "arrow": "→"
+    },
+    "errors": {
+      "unauthenticated": "Bitte als Plattform-Admin anmelden.",
+      "forbidden": "Keine Berechtigung.",
+      "invalid_input": "Ungültige Eingabe (Seitenzahl 1–400).",
+      "has_structure": "Diese Revision hat bereits erfasste Abschnitte; die Seitenzahl kommt aus der Struktur.",
+      "has_status": "Die Seitenzahl kann nicht unter Seiten mit Status gekürzt werden.",
+      "not_found": "Nicht gefunden.",
+      "failed": "Fehlgeschlagen. Bitte erneut versuchen."
+    }
+  }
+}

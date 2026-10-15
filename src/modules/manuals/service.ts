@@ -96,6 +96,11 @@ export async function listRevisionsForManual(db: Db, manualId: string): Promise<
  */
 export async function setRevisionPageCount(ctx: ProjectContext, revisionId: string, pageCount: number): Promise<void> {
   assertCan(ctx, "manuals.admin");
+  await applyRevisionPageCount(ctx.userId, revisionId, pageCount);
+}
+
+/** Kern von `setRevisionPageCount` ohne Rechteprüfung; der Aufrufer (Kontext oder Plattform-Admin) prüft. */
+export async function applyRevisionPageCount(userId: string, revisionId: string, pageCount: number): Promise<void> {
   if (!Number.isInteger(pageCount) || pageCount < 1 || pageCount > 400) throw new Error("Seitenzahl ungültig (1–400)");
   const db = getDb();
   const structure = await loadRevisionStructure(db, revisionId);
@@ -137,7 +142,7 @@ export async function setRevisionPageCount(ctx: ProjectContext, revisionId: stri
     await tx.update(manualRevisions).set({ pageCount }).where(eq(manualRevisions.id, revisionId));
     await recordAudit(tx, {
       projectId: null,
-      userId: ctx.userId,
+      userId,
       entityType: "manual_revision",
       entityId: revisionId,
       action: "set_page_count",
