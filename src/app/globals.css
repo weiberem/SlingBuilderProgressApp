@@ -68,12 +68,14 @@ h3 {
   color: var(--ink-muted);
 }
 
-button,
-input,
-select,
-textarea {
-  font: inherit;
-  color: inherit;
+@layer base {
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+    color: inherit;
+  }
 }
 
 :focus-visible {
