@@ -1,0 +1,61 @@
+{
+  "title": "Zusatzarbeiten",
+  "openCount": "{count, plural, =0 {keine offen} =1 {1 offen} other {# offen}}",
+  "filter": {
+    "label": "Anzeigen",
+    "open": "Offen",
+    "all": "Alle",
+    "done": "Erledigt"
+  },
+  "noCategory": "Ohne Bereich",
+  "groupCount": "{count, plural, =1 {1 Arbeit} other {# Arbeiten}}",
+  "empty": {
+    "open": "Keine offenen Zusatzarbeiten. Alles erledigt.",
+    "done": "Noch keine erledigten Zusatzarbeiten.",
+    "all": "Noch keine Zusatzarbeiten. Lege oben die erste an."
+  },
+  "form": {
+    "newTitle": "Neue Zusatzarbeit",
+    "title": "Titel",
+    "titlePlaceholder": "Was ist zu tun?",
+    "category": "Bereich",
+    "categoryHint": "Bestehenden Bereich wählen oder neuen eingeben.",
+    "note": "Notiz",
+    "dueDate": "Fällig am",
+    "submit": "Anlegen",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "created": "Zusatzarbeit angelegt.",
+    "saved": "Gespeichert.",
+    "pageLink": "Verknüpfte Seite",
+    "pageLinkKept": "Die Verknüpfung zur Seite bleibt beim Speichern erhalten.",
+    "pageUnknown": "Seite nicht gefunden. Die Zusatzarbeit wird ohne Seitenverknüpfung angelegt (klären)."
+  },
+  "item": {
+    "markDone": "Als erledigt markieren: {title}",
+    "markOpen": "Wieder öffnen: {title}",
+    "due": "Fällig {date}",
+    "overdue": "Überfällig seit {date}",
+    "doneAt": "Erledigt am {date}",
+    "page": "{manual} · Seite {page}",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "confirmDelete": "Wirklich löschen?",
+    "confirmYes": "Ja, löschen",
+    "origin": {
+      "import": "aus Prototyp übernommen",
+      "ticket": "aus Ticket"
+    }
+  },
+  "new": {
+    "title": "Neue Zusatzarbeit",
+    "forPage": "Für Seite",
+    "back": "Zur Liste"
+  },
+  "errors": {
+    "invalid_input": "Bitte einen Titel eingeben (maximal 200 Zeichen) und ein gültiges Datum wählen.",
+    "forbidden": "Keine Berechtigung.",
+    "not_found": "Zusatzarbeit nicht gefunden.",
+    "generic": "Etwas ist schiefgelaufen. Bitte erneut versuchen."
+  }
+}
