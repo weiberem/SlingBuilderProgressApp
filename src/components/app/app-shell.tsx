@@ -83,7 +83,7 @@ export function AppShell({
               <Settings className="size-4" aria-hidden />
               {t("settings")}
             </Link>
-            <form action={logoutAction}>
+            <form action={logoutAction} onSubmit={() => navigator.serviceWorker?.controller?.postMessage({ type: "CLEAR_CACHES" })}>
               <button type="submit" className="touch flex items-center gap-2 rounded px-3 text-sm font-semibold text-white/85 hover:bg-white/10" title={t("logout")}>
                 <LogOut className="size-4" aria-hidden />
                 <span className="sr-only">{t("logout")}</span>

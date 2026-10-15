@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { closeDb, getDb, resetTestDb } from "@/test/db";
-import { buildProjectContext, type ProjectContext } from "@/modules/projects/context";
+import { buildProjectContext, type ProjectContext } from "@/modules/projects/context-core";
 import { auditLog } from "@/modules/audit/schema";
 import { deleteDeviation, getWizardData, markOnboardingComplete, saveBuildType, saveProjectOption, upsertDeviation } from "./service";
 import { checkAnswerForDimension } from "./setup-input";

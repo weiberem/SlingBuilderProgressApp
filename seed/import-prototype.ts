@@ -7,7 +7,7 @@ import { env } from "@/lib/env";
 import { logger } from "@/lib/logger";
 import { users } from "@/modules/auth/schema";
 import { listManualsWithActiveRevision, loadRevisionStructure, setRevisionPageCount } from "@/modules/manuals/service";
-import { buildProjectContext } from "@/modules/projects/context";
+import { buildProjectContext } from "@/modules/projects/context-core";
 import { projects } from "@/modules/projects/schema";
 import { extraTasks, pageStatus } from "@/modules/progress/schema";
 import { setPageStatus } from "@/modules/progress/service";

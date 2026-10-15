@@ -15,6 +15,9 @@ const auth = messages("auth");
 const common = messages("common");
 const progress = messages("progress");
 
+// Dieser Test prüft die Anmeldung selbst, deshalb ohne gespeicherte Session.
+test.use({ storageState: { cookies: [], origins: [] } });
+
 test.beforeEach(() => {
   test.skip(!email || !password, "E2E_EMAIL/E2E_PASSWORD oder SEED_ADMIN_* fehlen");
 });

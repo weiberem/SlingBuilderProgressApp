@@ -239,7 +239,7 @@ export default async function PageDetailPage({ params }: { params: Params }) {
                   <li key={h.id} className="flex flex-col gap-0.5 py-2">
                     <span className="text-ink-muted">
                       {t("history.entry", { who: h.userId === ctx.userId ? ctx.userName : t("history.otherUser"), when: formatDateTime(h.at) })}
-                      {h.clientChangeId ? ` ${t("history.offlineSync")}` : ""}
+                      {h.clientChangeId && !h.clientChangeId.startsWith("prototype-import:") ? ` ${t("history.offlineSync")}` : ""}
                     </span>
                     <span className="font-semibold">{t("history.change", { from: statusLabel(oldV), to: statusLabel(newV) })}</span>
                     {newV?.note && newV.note !== oldV?.note ? <span className="text-ink-muted">{newV.note}</span> : null}

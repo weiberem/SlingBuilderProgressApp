@@ -11,7 +11,7 @@ import {
   type OptionDimension,
   type OptionValue,
 } from "@/modules/manuals/schema";
-import { assertCan, type ProjectContext } from "./context";
+import { assertCan, type ProjectContext } from "./context-core";
 import {
   projectBuildTypes,
   projectDeviations,

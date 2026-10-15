@@ -12,6 +12,7 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    ".claude/**",
     // Generierter Service Worker (pnpm build:sw)
     "public/sw.js",
     "public/sw.js.map",

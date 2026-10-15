@@ -2,7 +2,7 @@ import { and, asc, desc, eq, max } from "drizzle-orm";
 import { getDb } from "@/lib/db";
 import { recordAudit } from "@/modules/audit/service";
 import { manualRevisions, manuals, pages, sections } from "@/modules/manuals/schema";
-import { assertCan, type ProjectContext } from "@/modules/projects/context";
+import { assertCan, type ProjectContext } from "@/modules/projects/context-core";
 import { projects } from "@/modules/projects/schema";
 import { extraTasks, missingParts, type ExtraTask, type MissingPart } from "./schema";
 

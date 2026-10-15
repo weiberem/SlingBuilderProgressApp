@@ -21,7 +21,7 @@ import {
   rulesForPage,
   type RevisionStructure,
 } from "@/modules/manuals/service";
-import { assertCan, type ProjectContext } from "@/modules/projects/context";
+import { assertCan, type ProjectContext } from "@/modules/projects/context-core";
 import { getProject, getProjectConfig } from "@/modules/projects/service";
 import { mergeProgress, summarizeProgress, type ProgressSummary } from "./progress";
 import { extraTasks, missingParts, pageStatus, visas, type PageStatus } from "./schema";

@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { closeDb, resetTestDb } from "@/test/db";
 import { getDb } from "@/lib/db";
 import { auditLog } from "@/modules/audit/schema";
-import { buildProjectContext, Forbidden, type ProjectContext } from "@/modules/projects/context";
+import { buildProjectContext, Forbidden, type ProjectContext } from "@/modules/projects/context-core";
 import { getManualView } from "./service";
 import { applySyncBatch, syncRequestSchema, type SyncChange } from "./sync";
 import { applyPageChange, applySectionChange, applyStatusRows, toManualViewDto } from "./view-dto";

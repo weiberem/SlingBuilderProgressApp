@@ -29,8 +29,9 @@ export default defineConfig({
     launchOptions: process.env.E2E_CHROMIUM_PATH ? { executablePath: process.env.E2E_CHROMIUM_PATH } : {},
   },
   projects: [
-    { name: "desktop-chromium", use: { ...devices["Desktop Chrome"] } },
-    { name: "mobile-chromium", use: { ...devices["Pixel 7"] } },
+    { name: "setup", testMatch: /auth\.setup\.ts/ },
+    { name: "desktop-chromium", use: { ...devices["Desktop Chrome"], storageState: "e2e/.auth/user.json" }, dependencies: ["setup"] },
+    { name: "mobile-chromium", use: { ...devices["Pixel 7"], storageState: "e2e/.auth/user.json" }, dependencies: ["setup"] },
   ],
   webServer: {
     command: `pnpm dev -p ${PORT}`,

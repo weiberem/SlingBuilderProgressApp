@@ -3,7 +3,7 @@ import { getDb, type Db } from "@/lib/db";
 import { recordAudit } from "@/modules/audit/service";
 import { pageStatus } from "@/modules/progress/schema";
 import { projectManualRevisions, projects } from "@/modules/projects/schema";
-import { assertCan, type ProjectContext } from "@/modules/projects/context";
+import { assertCan, type ProjectContext } from "@/modules/projects/context-core";
 import { applyAliases, selectAliases, type AliasRule } from "./aliases";
 import {
   aliases,

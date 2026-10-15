@@ -2,8 +2,8 @@
  * Link auf die Detailansicht einer Handbuchseite. Einzige Stelle, an der Zusatzarbeiten und Fehlteile
  * die Seitenroute bilden; ändert sich die Route der Handbuch-Ansicht, wird nur hier angepasst.
  */
-export function pageHref(projectId: string, manualCode: string, pageId: string): string {
-  return `/p/${projectId}/manuals/${manualCode}/pages/${pageId}`;
+export function pageHref(projectId: string, _manualCode: string, pageId: string): string {
+  return `/p/${projectId}/pages/${pageId}`;
 }
 
 /** Anzeigeform einer Menge aus der Datenbank (numeric als String, z. B. "20.00" → "20"). */

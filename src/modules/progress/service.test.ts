@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { closeDb, resetTestDb } from "@/test/db";
-import { buildProjectContext, type ProjectContext } from "@/modules/projects/context";
+import { buildProjectContext, type ProjectContext } from "@/modules/projects/context-core";
 import { getManualView, getManualsOverview, previewConfigChange, setPageStatus, setSectionStatus } from "./service";
 import { getProjectConfig, saveProjectOption } from "@/modules/projects/service";
 import { getDb } from "@/lib/db";

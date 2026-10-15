@@ -3,7 +3,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { closeDb, getDb, resetTestDb } from "@/test/db";
 import { auditLog } from "@/modules/audit/schema";
 import { users } from "@/modules/auth/schema";
-import { buildProjectContext } from "@/modules/projects/context";
+import { buildProjectContext } from "@/modules/projects/context-core";
 import { getManualView } from "@/modules/progress/service";
 import { confirmRule, listAdminCatalog, setRevisionPageCountAsAdmin } from "./admin-service";
 import { applicabilityRules } from "./schema";

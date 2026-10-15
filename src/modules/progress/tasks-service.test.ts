@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { eq } from "drizzle-orm";
 import { closeDb, getDb, resetTestDb } from "@/test/db";
-import { buildProjectContext, Forbidden, type ProjectContext } from "@/modules/projects/context";
+import { buildProjectContext, Forbidden, type ProjectContext } from "@/modules/projects/context-core";
 import { auditLog } from "@/modules/audit/schema";
 import { getManualView } from "./service";
 import {

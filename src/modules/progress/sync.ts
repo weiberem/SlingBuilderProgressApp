@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/lib/db";
 import { pages as pagesTbl } from "@/modules/manuals/schema";
-import { assertCan, type ProjectContext } from "@/modules/projects/context";
+import { assertCan, type ProjectContext } from "@/modules/projects/context-core";
 import { listStatusesForPages, setPageStatus, setSectionStatus } from "./service";
 import type { PageStatusRowDto } from "./view-dto";
 

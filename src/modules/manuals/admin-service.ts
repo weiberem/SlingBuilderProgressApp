@@ -2,7 +2,7 @@ import { asc, eq } from "drizzle-orm";
 import { getDb, type Db } from "@/lib/db";
 import { recordAudit } from "@/modules/audit/service";
 import { users } from "@/modules/auth/schema";
-import { Forbidden } from "@/modules/projects/context";
+import { Forbidden } from "@/modules/projects/context-core";
 import {
   aircraftModels,
   aliases,

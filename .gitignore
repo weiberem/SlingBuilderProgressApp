@@ -54,3 +54,6 @@ next-env.d.ts
 
 # Claude-Worktrees der Build-Agenten
 /.claude/worktrees/
+
+# Playwright Session-Zustand
+/e2e/.auth/
