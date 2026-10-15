@@ -1,0 +1,95 @@
+{
+  "backToDashboard": "Zur Übersicht",
+  "revision": "Rev {revision}",
+  "noRevision": {
+    "title": "Keine freigegebene Revision",
+    "text": "Für dieses Handbuch gibt es noch keine freigegebene Revision. Sobald eine Revision freigegeben ist, erscheinen die Bauseiten hier."
+  },
+  "progress": {
+    "done": "{done} von {relevant} erledigt",
+    "percent": "{percent} %",
+    "inProgress": "{count} in Arbeit",
+    "problem": "{count, plural, =1 {1 Problem} other {# Probleme}}",
+    "notApplicable": "{count} nicht zutreffend",
+    "clarify": "{count} klären",
+    "conflicts": "{count, plural, =1 {1 Widerspruch zur Konfiguration} other {# Widersprüche zur Konfiguration}}"
+  },
+  "hints": {
+    "title": "Hinweise zur Revision",
+    "notes": "Hinweise",
+    "conflicts": "Konflikte",
+    "resolved": "gelöst",
+    "open": "offen",
+    "pages": "Seiten {pages}",
+    "revisionNote": "Notiz zur Revision"
+  },
+  "filters": {
+    "label": "Filter",
+    "openOnly": "nur offene zeigen",
+    "clarify": "Varianten klären",
+    "empty": "Keine Seiten für diesen Filter."
+  },
+  "legend": {
+    "title": "Legende",
+    "open": "offen",
+    "in_progress": "in Arbeit",
+    "done": "erledigt",
+    "not_applicable": "trifft nicht zu",
+    "derived": "laut Konfiguration",
+    "problem": "Problem",
+    "clarify": "Variante klären",
+    "help": "Tippen: offen → erledigt → trifft nicht zu → offen. Lange drücken oder «…»: alle Status, Datum, Notiz."
+  },
+  "section": {
+    "pages": "S. {from}–{to}",
+    "page": "S. {n}",
+    "originalTitle": "im Handbuch: {title}",
+    "markDone": "Abschnitt erledigt",
+    "reset": "Abschnitt zurücksetzen",
+    "resetConfirm": "Alle Seiten dieses Abschnitts auf «offen» zurücksetzen?",
+    "clarify": "Variante klären",
+    "qbPrebuilt": "Quick Build: ab Werk",
+    "rules": "Regeln: {reasons}",
+    "unconfirmed": "{count, plural, =1 {1 unbestätigte Regel (Vorschlag)} other {# unbestätigte Regeln (Vorschläge)}}",
+    "doneOf": "{done}/{relevant}",
+    "untitled": "Seiten ohne Titel",
+    "noRelevant": "keine zutreffenden Seiten"
+  },
+  "chip": {
+    "label": "Seite {n}: {status}",
+    "naReason": "({reason})",
+    "clarify": "Variante klären",
+    "conflict": "widerspricht der Konfiguration",
+    "more": "Optionen für Seite {n}",
+    "saving": "wird synchronisiert"
+  },
+  "sheet": {
+    "title": "Seite {n}",
+    "status": "Status",
+    "doneAt": "Erledigt am",
+    "note": "Notiz",
+    "save": "Speichern",
+    "saved": "Gespeichert",
+    "detail": "Seitendetails öffnen",
+    "close": "Schliessen",
+    "derivedWarning": "Status abgeleitet: trifft nicht zu, {reason}. Ein manuell gesetzter Status hat Vorrang und wird als Widerspruch zur Konfiguration angezeigt – nur setzen, wenn die Seite wirklich gebaut wird.",
+    "conflictWarning": "Der manuelle Status widerspricht der Konfiguration ({reason}).",
+    "clarifyHint": "Variante klären: Die Konfiguration beantwortet nicht, ob diese Seite gilt. Prüfe die Regeln oder ergänze die Konfiguration.",
+    "rules": "Regeln: {reasons}",
+    "unconfirmed": "{count, plural, =1 {1 unbestätigte Regel (Vorschlag)} other {# unbestätigte Regeln (Vorschläge)}}",
+    "originalTitle": "im Handbuch: {title}"
+  },
+  "noStructure": {
+    "title": "Seiten noch nicht erfasst",
+    "text": "Für diese Revision sind noch keine Bauseiten erfasst, deshalb kann hier noch nichts abgehakt werden.",
+    "adminHint": "Ein Plattform-Admin kann die Anzahl Bauseiten unter «Stammdaten» setzen; die Seiten erscheinen dann ohne Titel.",
+    "adminLink": "Stammdaten öffnen"
+  },
+  "offline": {
+    "fromCache": "Stand vom {time} aus dem Zwischenspeicher. Änderungen werden gespeichert und später synchronisiert.",
+    "refreshing": "Aktualisiere …",
+    "syncError": "Synchronisation fehlgeschlagen: {error}",
+    "changeFailed": "{count, plural, =1 {1 Änderung konnte nicht übernommen werden} other {# Änderungen konnten nicht übernommen werden}}: {error}",
+    "retry": "Jetzt synchronisieren"
+  }
+}

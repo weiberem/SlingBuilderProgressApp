@@ -1,0 +1,99 @@
+{
+  "title": "Seite {n}",
+  "backToManual": "Zurück zu {manual}",
+  "prev": "Vorherige Seite ({n})",
+  "next": "Nächste Seite ({n})",
+  "originalTitle": "im Handbuch: {title}",
+  "noTitle": "ohne Titel",
+  "meta": {
+    "section": "Abschnitt",
+    "revision": "Rev {revision}",
+    "docNumber": "Dokument",
+    "drawing": "Zeichnung"
+  },
+  "flags": {
+    "title": "Hinweise aus der Aufbereitung",
+    "tocMismatch": "Inhaltsverzeichnis und Zeichnungskopf widersprechen sich – im Handbuch prüfen (ungeklärt).",
+    "missingInToc": "Diese Seite fehlt im Inhaltsverzeichnis des Handbuchs.",
+    "typeHeaderMismatch": "Der Zeichnungskopf nennt einen anderen Flugzeugtyp («{value}»), vermutlich Dublette oder Schreibfehler. Die Seite wird nicht ausgefiltert.",
+    "variantNote": "Varianten-Hinweis im Handbuch: «{value}». Dafür gibt es noch keine Regel – Variante klären.",
+    "qbConflict": "Quick-Build-Hinweis widersprüchlich: {value} – klären.",
+    "noText": "Die Zeichnung enthält keinen lesbaren Text; Titel und Hinweise konnten nicht automatisch gelesen werden."
+  },
+  "applicability": {
+    "title": "Varianten-Regeln",
+    "none": "Keine Regeln: Die Seite gilt für alle Konfigurationen.",
+    "confirmed": "bestätigt",
+    "unconfirmed": "unbestätigt (Vorschlag)",
+    "effect": {
+      "applies_only_if": "gilt nur bei",
+      "qb_prebuilt": "bei Quick Build ab Werk erledigt"
+    },
+    "noSource": "ohne Quelltext",
+    "result": {
+      "applies": "Laut Konfiguration gilt die Seite.",
+      "notApplies": "Laut Konfiguration trifft die Seite nicht zu.",
+      "unknown": "Die Konfiguration beantwortet nicht, ob die Seite gilt – Variante klären.",
+      "qbPrebuilt": "Bei Quick Build ab Werk erledigt.",
+      "qbUnknown": "Build-Art der Baugruppe unbekannt – klären, ob der Schritt ab Werk erledigt ist."
+    },
+    "conflict": "Der manuelle Status widerspricht der Konfiguration ({reason})."
+  },
+  "status": {
+    "title": "Status",
+    "current": "Aktuell: {status}",
+    "derived": "abgeleitet aus der Konfiguration",
+    "setBy": "manuell gesetzt",
+    "saved": "Status gespeichert.",
+    "doneAt": "Erledigt am",
+    "note": "Notiz",
+    "save": "Datum und Notiz speichern",
+    "noteSaved": "Gespeichert."
+  },
+  "parts": {
+    "title": "Fehlteile",
+    "empty": "Keine Fehlteile für diese Seite.",
+    "position": "Position",
+    "partNumber": "Teilenummer",
+    "description": "Beschreibung",
+    "quantity": "Menge",
+    "unit": "Einheit",
+    "add": "Fehlteil hinzufügen",
+    "delete": "Löschen",
+    "deleteConfirm": "Fehlteil wirklich löschen?",
+    "status": "Status",
+    "statusValue": {
+      "needed": "benötigt",
+      "ordered": "bestellt",
+      "received": "erhalten",
+      "installed": "verbaut"
+    },
+    "allParts": "Alle Fehlteile"
+  },
+  "tasks": {
+    "title": "Zusatzarbeiten",
+    "empty": "Keine Zusatzarbeiten zu dieser Seite.",
+    "add": "Zusatzarbeit anlegen",
+    "done": "erledigt",
+    "open": "offen"
+  },
+  "visas": {
+    "title": "Visa",
+    "empty": "Noch kein Visum des Bauberaters.",
+    "by": "{name} am {date}"
+  },
+  "history": {
+    "title": "Verlauf",
+    "empty": "Noch keine Änderungen.",
+    "entry": "{who} · {when}",
+    "change": "{from} → {to}",
+    "none": "–",
+    "otherUser": "anderer Nutzer",
+    "offlineSync": "(Offline-Sync)"
+  },
+  "errors": {
+    "invalid_input": "Ungültige Eingabe.",
+    "forbidden": "Keine Berechtigung.",
+    "generic": "Etwas ist schiefgelaufen. Bitte erneut versuchen."
+  }
+}
