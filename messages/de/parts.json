@@ -1,0 +1,53 @@
+{
+  "title": "Fehlteile",
+  "summary": "{needed, plural, =0 {Kein Teil benötigt} =1 {1 Teil benötigt} other {# Teile benötigt}} · {total, plural, =1 {1 Eintrag} other {# Einträge}}",
+  "export": "CSV exportieren",
+  "exportHint": "Für eine Bestellung bei Sling (Excel-tauglich).",
+  "noManual": "Ohne Seite",
+  "groupCount": "{count, plural, =1 {1 Teil} other {# Teile}}",
+  "empty": "Noch keine Fehlteile erfasst. Trage oben das erste Teil ein.",
+  "columns": {
+    "position": "Pos.",
+    "partNumber": "Teilenummer",
+    "description": "Beschreibung",
+    "quantity": "Menge",
+    "status": "Status",
+    "page": "Seite",
+    "note": "Notiz"
+  },
+  "status": {
+    "needed": "benötigt",
+    "ordered": "bestellt",
+    "received": "erhalten",
+    "installed": "verbaut"
+  },
+  "item": {
+    "statusFor": "Status für {description}",
+    "page": "{manual} · Seite {page}",
+    "delete": "Löschen",
+    "confirmDelete": "Wirklich löschen?",
+    "confirmYes": "Ja, löschen",
+    "cancel": "Abbrechen"
+  },
+  "form": {
+    "newTitle": "Neues Fehlteil",
+    "position": "Position",
+    "positionPlaceholder": "z. B. 12",
+    "partNumber": "Teilenummer",
+    "description": "Beschreibung",
+    "descriptionPlaceholder": "Was fehlt?",
+    "quantity": "Menge",
+    "unit": "Einheit",
+    "note": "Notiz",
+    "submit": "Erfassen",
+    "created": "Fehlteil erfasst.",
+    "pageLink": "Verknüpfte Seite",
+    "pageUnknown": "Seite nicht gefunden. Das Fehlteil wird ohne Seitenverknüpfung erfasst (klären)."
+  },
+  "errors": {
+    "invalid_input": "Bitte eine Beschreibung und eine gültige Menge angeben.",
+    "forbidden": "Keine Berechtigung.",
+    "not_found": "Fehlteil nicht gefunden.",
+    "generic": "Etwas ist schiefgelaufen. Bitte erneut versuchen."
+  }
+}

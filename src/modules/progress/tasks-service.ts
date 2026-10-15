@@ -3,11 +3,14 @@ import { getDb } from "@/lib/db";
 import { recordAudit } from "@/modules/audit/service";
 import { manualRevisions, manuals, pages, sections } from "@/modules/manuals/schema";
 import { assertCan, type ProjectContext } from "@/modules/projects/context";
+import { projects } from "@/modules/projects/schema";
 import { extraTasks, missingParts, type ExtraTask, type MissingPart } from "./schema";
 
 export type TaskFilter = "open" | "done" | "all";
 
-export type TaskWithLink = ExtraTask & { pageRef: { manualCode: string; manualTitle: string; pageNumber: number } | null };
+export type PageRef = { manualCode: string; manualTitle: string; pageNumber: number };
+
+export type TaskWithLink = ExtraTask & { pageRef: PageRef | null };
 
 /** Zusatzarbeiten mit Verweis auf Handbuch/Seite (über die Revision aufgelöst). */
 export async function listTasks(ctx: ProjectContext, filter: TaskFilter = "open"): Promise<TaskWithLink[]> {
@@ -19,7 +22,7 @@ export async function listTasks(ctx: ProjectContext, filter: TaskFilter = "open"
     .where(eq(extraTasks.projectId, ctx.projectId))
     .orderBy(asc(extraTasks.done), asc(extraTasks.sortOrder), asc(extraTasks.createdAt));
   const linked = rows.filter((r) => r.task.pageId);
-  const refs = new Map<string, { manualCode: string; manualTitle: string; pageNumber: number }>();
+  const refs = new Map<string, PageRef>();
   if (linked.length) {
     const refRows = await db
       .select({ pageId: pages.id, pageNumber: pages.pageNumber, manualCode: manuals.code, manualTitle: manuals.title })
@@ -40,6 +43,26 @@ export async function listTaskCategories(ctx: ProjectContext): Promise<string[]>
     .from(extraTasks)
     .where(eq(extraTasks.projectId, ctx.projectId));
   return rows.map((r) => r.category).filter((c): c is string => !!c).sort((a, b) => a.localeCompare(b, "de"));
+}
+
+/**
+ * Verweis auf eine Handbuchseite (Handbuch + Seitennummer) für Formulare, die eine Seite verknüpfen.
+ * Null, wenn die Seite nicht existiert oder nicht zum Flugzeugmodell des Projekts gehört.
+ */
+export async function getPageRef(ctx: ProjectContext, pageId: string): Promise<(PageRef & { pageId: string }) | null> {
+  assertCan(ctx, "project.read");
+  const db = getDb();
+  const [row] = await db
+    .select({ pageId: pages.id, pageNumber: pages.pageNumber, manualCode: manuals.code, manualTitle: manuals.title, modelId: manuals.aircraftModelId })
+    .from(pages)
+    .innerJoin(manualRevisions, eq(manualRevisions.id, pages.revisionId))
+    .innerJoin(manuals, eq(manuals.id, manualRevisions.manualId))
+    .where(eq(pages.id, pageId))
+    .limit(1);
+  if (!row) return null;
+  const [project] = await db.select({ aircraftModelId: projects.aircraftModelId }).from(projects).where(eq(projects.id, ctx.projectId)).limit(1);
+  if (!project || project.aircraftModelId !== row.modelId) return null;
+  return { pageId: row.pageId, pageNumber: row.pageNumber, manualCode: row.manualCode, manualTitle: row.manualTitle };
 }
 
 export type TaskInput = {
@@ -113,6 +136,9 @@ export async function countOpenTasks(ctx: ProjectContext): Promise<number> {
   return rows.length;
 }
 
+export const MISSING_PART_STATUSES = ["needed", "ordered", "received", "installed"] as const;
+export type MissingPartStatus = (typeof MISSING_PART_STATUSES)[number];
+
 export type MissingPartInput = {
   pageId?: string | null;
   position?: string | null;
@@ -123,7 +149,9 @@ export type MissingPartInput = {
   note?: string | null;
 };
 
-export async function listMissingParts(ctx: ProjectContext): Promise<(MissingPart & { pageNumber: number | null; manualTitle: string | null })[]> {
+export type MissingPartWithLink = MissingPart & { pageNumber: number | null; manualTitle: string | null; manualCode: string | null };
+
+export async function listMissingParts(ctx: ProjectContext): Promise<MissingPartWithLink[]> {
   assertCan(ctx, "project.read");
   const db = getDb();
   const rows = await db
@@ -133,12 +161,18 @@ export async function listMissingParts(ctx: ProjectContext): Promise<(MissingPar
     .where(eq(missingParts.projectId, ctx.projectId))
     .orderBy(desc(missingParts.createdAt));
   const revIds = [...new Set(rows.map((r) => r.revisionId).filter((x): x is string => !!x))];
-  const titles = new Map<string, string>();
+  const titles = new Map<string, { title: string; code: string }>();
   if (revIds.length) {
-    const t = await db.select({ id: manualRevisions.id, title: manuals.title }).from(manualRevisions).innerJoin(manuals, eq(manuals.id, manualRevisions.manualId));
-    for (const x of t) titles.set(x.id, x.title);
+    const t = await db
+      .select({ id: manualRevisions.id, title: manuals.title, code: manuals.code })
+      .from(manualRevisions)
+      .innerJoin(manuals, eq(manuals.id, manualRevisions.manualId));
+    for (const x of t) titles.set(x.id, { title: x.title, code: x.code });
   }
-  return rows.map((r) => ({ ...r.part, pageNumber: r.pageNumber ?? null, manualTitle: r.revisionId ? (titles.get(r.revisionId) ?? null) : null }));
+  return rows.map((r) => {
+    const m = r.revisionId ? titles.get(r.revisionId) : undefined;
+    return { ...r.part, pageNumber: r.pageNumber ?? null, manualTitle: m?.title ?? null, manualCode: m?.code ?? null };
+  });
 }
 
 export async function createMissingPart(ctx: ProjectContext, input: MissingPartInput): Promise<MissingPart> {
@@ -161,7 +195,7 @@ export async function createMissingPart(ctx: ProjectContext, input: MissingPartI
   return row;
 }
 
-export async function updateMissingPartStatus(ctx: ProjectContext, id: string, status: "needed" | "ordered" | "received" | "installed"): Promise<void> {
+export async function updateMissingPartStatus(ctx: ProjectContext, id: string, status: MissingPartStatus): Promise<void> {
   assertCan(ctx, "parts.write");
   const db = getDb();
   const [old] = await db.select().from(missingParts).where(and(eq(missingParts.id, id), eq(missingParts.projectId, ctx.projectId))).limit(1);
@@ -175,13 +209,21 @@ export async function deleteMissingPart(ctx: ProjectContext, id: string): Promis
   await getDb().delete(missingParts).where(and(eq(missingParts.id, id), eq(missingParts.projectId, ctx.projectId)));
 }
 
-/** CSV-Export der Fehlteile (für eine Bestellung bei Sling). */
-export function missingPartsToCsv(parts: Awaited<ReturnType<typeof listMissingParts>>): string {
+export type MissingPartCsvRow = Pick<MissingPartWithLink, "manualTitle" | "pageNumber" | "position" | "partNumber" | "description" | "quantity" | "unit" | "status" | "note">;
+
+/**
+ * CSV-Export der Fehlteile (für eine Bestellung bei Sling). Trennzeichen `;` (Excel, de-CH),
+ * Felder mit `;`, `"` oder Zeilenumbruch werden in Anführungszeichen gesetzt. Ohne BOM; den setzt der Download.
+ * `statusLabels` übersetzt die Statuscodes (fehlt ein Eintrag, bleibt der Code).
+ */
+export function missingPartsToCsv(parts: MissingPartCsvRow[], statusLabels: Partial<Record<MissingPart["status"], string>> = {}): string {
   const esc = (v: string | number | null | undefined) => {
     const s = v == null ? "" : String(v);
     return /[";\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
   };
   const header = ["Handbuch", "Seite", "Position", "Teilenummer", "Beschreibung", "Menge", "Einheit", "Status", "Notiz"];
-  const lines = parts.map((p) => [p.manualTitle, p.pageNumber, p.position, p.partNumber, p.description, p.quantity, p.unit, p.status, p.note].map(esc).join(";"));
+  const lines = parts.map((p) =>
+    [p.manualTitle, p.pageNumber, p.position, p.partNumber, p.description, p.quantity, p.unit, statusLabels[p.status] ?? p.status, p.note].map(esc).join(";"),
+  );
   return [header.join(";"), ...lines].join("\n");
 }
