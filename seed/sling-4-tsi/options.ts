@@ -1,0 +1,203 @@
+import type { SeedAssemblyGroup, SeedOptionDimension, SeedOptionGroup } from "../types";
+
+/**
+ * Konfigurationsachsen der Sling 4 TSi (Onboarding). Quelle: Auftrag «Sling Builder Tracker»,
+ * Kernfunktion 2. Hilfetexte, die noch nicht belegt sind, sind als «zu ergänzen» markiert.
+ */
+
+export const assemblyGroups: SeedAssemblyGroup[] = [
+  { code: "empennage", label: { de: "Leitwerk (Empennage)", en: "Empennage" }, sortOrder: 1 },
+  { code: "wing", label: { de: "Flügel (Wing)", en: "Wing" }, sortOrder: 2 },
+  { code: "fuselage", label: { de: "Rumpf (Fuselage)", en: "Fuselage" }, sortOrder: 3 },
+  { code: "undercarriage", label: { de: "Fahrwerk (Undercarriage)", en: "Undercarriage" }, sortOrder: 4 },
+  { code: "canopy", label: { de: "Kabinenhaube (Canopy)", en: "Canopy" }, sortOrder: 5 },
+  { code: "fwf", label: { de: "Motorraum und Treibstoff (Firewall Forward & Fuel)", en: "Firewall Forward & Fuel" }, sortOrder: 6 },
+  { code: "electrics", label: { de: "Elektrik (Electrics)", en: "Electrics" }, sortOrder: 7 },
+  { code: "finishing", label: { de: "Endmontage (Finishing)", en: "Finishing" }, sortOrder: 8 },
+  { code: "heater", label: { de: "Heizung (Heater Air System)", en: "Heater Air System" }, sortOrder: 9 },
+];
+
+export const optionGroups: SeedOptionGroup[] = [
+  { code: "build", label: { de: "Build-Art" }, sortOrder: 1, help: { de: "Je Baugruppe: Standard-Kit oder Quick Build ab Werk." } },
+  { code: "engine", label: { de: "Motor und Propeller" }, sortOrder: 2 },
+  { code: "safety", label: { de: "Rettungssystem" }, sortOrder: 3 },
+  { code: "brakes", label: { de: "Bremsen" }, sortOrder: 4 },
+  { code: "fuel", label: { de: "Tanks" }, sortOrder: 5 },
+  { code: "canopy", label: { de: "Canopy-Version" }, sortOrder: 6 },
+  { code: "avionics", label: { de: "Avionik und Autopilot" }, sortOrder: 7 },
+  { code: "lights", label: { de: "Lichter" }, sortOrder: 8 },
+  { code: "deviations", label: { de: "Eigene Abweichungen" }, sortOrder: 9, help: { de: "Fliessen als Entwurf in EAS 12.28 «Project alterations sheet»." } },
+];
+
+export const optionDimensions: SeedOptionDimension[] = [
+  {
+    code: "engine",
+    kind: "single",
+    label: { de: "Motor" },
+    help: { de: "In TSi-Handbüchern steht teils «Rotax 915 iS» oder «915 / 916». Die App zeigt die Bezeichnung laut dieser Antwort; der Originaltext bleibt als Tooltip sichtbar." },
+    groupCode: "engine",
+    sortOrder: 1,
+    required: true,
+    values: [
+      { code: "rotax_915is", label: { de: "Rotax 915 iS" }, aliasValue: "915 iS", sortOrder: 1 },
+      { code: "rotax_916is", label: { de: "Rotax 916 iS (A)" }, aliasValue: "916 iS", sortOrder: 2 },
+    ],
+  },
+  {
+    code: "propeller",
+    kind: "single",
+    label: { de: "Propeller" },
+    groupCode: "engine",
+    sortOrder: 2,
+    values: [
+      { code: "airmaster", label: { de: "Airmaster" }, sortOrder: 1 },
+      { code: "mt", label: { de: "MT-Propeller" }, sortOrder: 2 },
+      { code: "whirlwind", label: { de: "Whirlwind" }, sortOrder: 3 },
+      { code: "other", label: { de: "anderer" }, sortOrder: 9 },
+    ],
+  },
+  {
+    code: "propeller_governor",
+    kind: "text",
+    label: { de: "Propellerregler" },
+    help: { de: "z. B. RS FlightSystems SCU 9iS" },
+    groupCode: "engine",
+    sortOrder: 3,
+  },
+  {
+    code: "parachute",
+    kind: "single",
+    label: { de: "Rettungsschirm" },
+    groupCode: "safety",
+    sortOrder: 1,
+    required: true,
+    values: [
+      { code: "none", label: { de: "kein Rettungsschirm" }, sortOrder: 1 },
+      { code: "brs", label: { de: "BRS" }, sortOrder: 2 },
+      { code: "magnum", label: { de: "Magnum" }, sortOrder: 3 },
+    ],
+  },
+  {
+    code: "brakes",
+    kind: "single",
+    label: { de: "Bremssystem" },
+    groupCode: "brakes",
+    sortOrder: 1,
+    required: true,
+    values: [
+      { code: "matco", label: { de: "MATCO" }, sortOrder: 1 },
+      { code: "beringer", label: { de: "Beringer" }, sortOrder: 2 },
+    ],
+  },
+  {
+    code: "brake_control",
+    kind: "single",
+    label: { de: "Bremsbedienung" },
+    groupCode: "brakes",
+    sortOrder: 2,
+    required: true,
+    values: [
+      { code: "hand", label: { de: "Standard (Handhebel)" }, sortOrder: 1 },
+      { code: "toe_single", label: { de: "Toe Brakes, einfach" }, sortOrder: 2 },
+      { code: "toe_dual", label: { de: "Toe Brakes, dual" }, sortOrder: 3 },
+    ],
+  },
+  {
+    code: "tanks",
+    kind: "multi",
+    label: { de: "Tanks" },
+    help: { de: "Mehrfachauswahl. Der Standardtank ist immer dabei; Long Range ergänzt ihn." },
+    groupCode: "fuel",
+    sortOrder: 1,
+    required: true,
+    values: [
+      { code: "standard_198", label: { de: "Standard 198 L" }, sortOrder: 1 },
+      { code: "long_range", label: { de: "Long Range (laut Handbuch 52 L)" }, sortOrder: 2 },
+      { code: "other", label: { de: "weitere" }, sortOrder: 9 },
+    ],
+  },
+  {
+    code: "tanks_note",
+    kind: "text",
+    label: { de: "Ergänzung Tanks" },
+    help: { de: "z. B. Transferpumpen, abweichende Grösse, Ferry-Tank." },
+    groupCode: "fuel",
+    sortOrder: 2,
+  },
+  {
+    code: "canopy_version",
+    kind: "single",
+    label: { de: "Canopy-Version" },
+    help: { de: "Erkennungsmerkmale sind noch zu ergänzen (Quelle: Canopy-Handbuch Rev 2.5, Seiten 7–9 und 25–28). Bis dahin: «weiss ich nicht» wählen, die betroffenen Seiten bleiben sichtbar." },
+    groupCode: "canopy",
+    sortOrder: 1,
+    required: true,
+    values: [
+      { code: "2019", label: { de: "Version 2019" }, sortOrder: 1 },
+      { code: "2020_2021", label: { de: "Version 2020–2021" }, sortOrder: 2 },
+      { code: "2023", label: { de: "Version 2023" }, sortOrder: 3 },
+    ],
+  },
+  {
+    code: "autopilot_servos",
+    kind: "multi",
+    label: { de: "Autopilot-Servos" },
+    help: { de: "z. B. Garmin GSA 28 (GFC 500)." },
+    groupCode: "avionics",
+    sortOrder: 1,
+    required: true,
+    values: [
+      { code: "none", label: { de: "keine" }, sortOrder: 1 },
+      { code: "roll", label: { de: "Roll (Querruder)" }, sortOrder: 2 },
+      { code: "pitch", label: { de: "Pitch (Höhenruder)" }, sortOrder: 3 },
+      { code: "yaw", label: { de: "Yaw (Seitenruder)" }, sortOrder: 4 },
+    ],
+  },
+  {
+    code: "avionics_platform",
+    kind: "single",
+    label: { de: "Avionik-Plattform" },
+    groupCode: "avionics",
+    sortOrder: 2,
+    values: [
+      { code: "g3x_touch", label: { de: "Garmin G3X Touch" }, sortOrder: 1 },
+      { code: "garmin_axis", label: { de: "Garmin AXIS" }, sortOrder: 2 },
+      { code: "other", label: { de: "andere" }, sortOrder: 9 },
+    ],
+  },
+  {
+    code: "avionics_details",
+    kind: "text",
+    label: { de: "Avionik-Komponenten" },
+    help: { de: "Geräteliste, fliesst später in die Equipment-Liste (EAS 12.29c) und FOCA 53074." },
+    groupCode: "avionics",
+    sortOrder: 3,
+  },
+  {
+    code: "o2_system",
+    kind: "text",
+    label: { de: "Sauerstoffsystem" },
+    help: { de: "z. B. Aithre; leer lassen, wenn keines." },
+    groupCode: "avionics",
+    sortOrder: 4,
+  },
+  {
+    code: "extra_pumps",
+    kind: "text",
+    label: { de: "Zusatzpumpen" },
+    groupCode: "avionics",
+    sortOrder: 5,
+  },
+  {
+    code: "lights",
+    kind: "single",
+    label: { de: "Lichter" },
+    groupCode: "lights",
+    sortOrder: 1,
+    values: [
+      { code: "wig_wag_standard", label: { de: "Wig-Wag Standard" }, sortOrder: 1 },
+      { code: "aveo", label: { de: "Aveo" }, sortOrder: 2 },
+      { code: "other", label: { de: "andere" }, sortOrder: 9 },
+    ],
+  },
+];

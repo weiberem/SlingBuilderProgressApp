@@ -1,0 +1,17 @@
+{
+  "dashboard": {
+    "pagesDone": "Seiten erledigt",
+    "ofRelevant": "der zutreffenden",
+    "openTasks": "Zusatzarbeiten offen",
+    "manuals": "Bauanleitungen",
+    "clarify": "{count, plural, =1 {1 Seite: Variante klären} other {# Seiten: Variante klären}}",
+    "problems": "{count, plural, =1 {1 Problem} other {# Probleme}}",
+    "conflicts": "{count, plural, =1 {1 manueller Status widerspricht der Konfiguration} other {# manuelle Status widersprechen der Konfiguration}}",
+    "notApplicable": "{count} n/a",
+    "setupOpen": "Konfiguration unvollständig",
+    "noDocNumber": "ohne Dokumentnummer",
+    "noPages": "Keine abhakbaren Seiten",
+    "structureMissing": "Seiten noch nicht erfasst",
+    "noRevision": "Keine freigegebene Revision"
+  }
+}

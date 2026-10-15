@@ -1,0 +1,64 @@
+{
+  "app": {
+    "name": "Sling Builder Tracker",
+    "tagline": "Baufortschritt nach Sling Construction Manual",
+    "brand": "Sling Aircraft Switzerland"
+  },
+  "nav": {
+    "build": "Bau",
+    "tasks": "Zusatzarbeiten",
+    "parts": "Fehlteile",
+    "setup": "Konfiguration",
+    "settings": "Einstellungen",
+    "admin": "Stammdaten",
+    "projects": "Projekte",
+    "logout": "Abmelden",
+    "more": "Mehr",
+    "menu": "Menü",
+    "skipToContent": "Zum Inhalt springen"
+  },
+  "actions": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "confirmDelete": "Wirklich löschen?",
+    "edit": "Bearbeiten",
+    "add": "Hinzufügen",
+    "close": "Schliessen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "export": "Exportieren",
+    "retry": "Erneut versuchen",
+    "open": "Öffnen"
+  },
+  "status": {
+    "open": "offen",
+    "in_progress": "in Arbeit",
+    "done": "erledigt",
+    "not_applicable": "trifft nicht zu",
+    "problem": "Problem",
+    "clarify": "Variante klären",
+    "naReason": {
+      "manual": "manuell gesetzt",
+      "config": "laut Konfiguration",
+      "quick_build": "Quick Build, ab Werk erledigt"
+    }
+  },
+  "offline": {
+    "title": "Offline",
+    "banner": "Keine Verbindung. Änderungen werden gespeichert und später synchronisiert.",
+    "pending": "{count, plural, =1 {1 Änderung wartet auf Synchronisation} other {# Änderungen warten auf Synchronisation}}",
+    "synced": "Alle Änderungen synchronisiert",
+    "syncNow": "Jetzt synchronisieren",
+    "pageTitle": "Keine Verbindung",
+    "pageText": "Diese Seite ist offline nicht verfügbar. Bereits geöffnete Handbücher bleiben bedienbar."
+  },
+  "errors": {
+    "generic": "Etwas ist schiefgelaufen. Bitte erneut versuchen.",
+    "notFound": "Nicht gefunden.",
+    "forbidden": "Keine Berechtigung."
+  },
+  "date": {
+    "today": "heute"
+  }
+}

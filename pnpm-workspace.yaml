@@ -1,0 +1,6 @@
+onlyBuiltDependencies:
+  - esbuild
+  - '@node-rs/argon2'
+ignoredBuiltDependencies:
+  - sharp
+  - unrs-resolver
