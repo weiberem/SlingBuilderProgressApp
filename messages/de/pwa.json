@@ -1,0 +1,12 @@
+{
+  "install": {
+    "title": "Als App installieren",
+    "checking": "Prüfe, ob die App installiert ist …",
+    "installed": "Die App ist auf diesem Gerät installiert und läuft im Vollbild.",
+    "intro": "Installiert startet der Tracker vom Home-Bildschirm, ohne Browserleiste, und bleibt im Hangar auch ohne Netz bedienbar.",
+    "button": "Installieren",
+    "iosStep1": "In Safari unten auf «Teilen» tippen",
+    "iosStep2": "«Zum Home-Bildschirm» wählen und mit «Hinzufügen» bestätigen",
+    "manual": "Im Browsermenü «App installieren» oder «Zum Startbildschirm hinzufügen» wählen."
+  }
+}

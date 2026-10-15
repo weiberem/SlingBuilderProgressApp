@@ -1,0 +1,24 @@
+# Reverse-Proxy vor dem web-Container mit automatischem TLS (Let's Encrypt).
+# DOMAIN aus .env, z. B. DOMAIN=tracker.example.ch → https://tracker.example.ch
+# Ohne DOMAIN (lokal): http://localhost, kein Zertifikat.
+{$DOMAIN:http://localhost} {
+	encode zstd gzip
+
+	header {
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy strict-origin-when-cross-origin
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		-Server
+	}
+
+	reverse_proxy web:3000 {
+		# Grosse Uploads (Handbuch-PDFs bis 250 MB) laufen gestreamt durch.
+		flush_interval -1
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}

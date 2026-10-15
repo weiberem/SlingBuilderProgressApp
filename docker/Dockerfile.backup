@@ -1,0 +1,9 @@
+# Backup-Container: pg_dump per Cron (busybox crond), 30 Tage Rotation, optional rclone-Push.
+FROM alpine:3.21
+RUN apk add --no-cache postgresql16-client rclone tzdata
+COPY backup.sh /usr/local/bin/backup.sh
+COPY backup-entrypoint.sh /usr/local/bin/backup-entrypoint.sh
+RUN chmod +x /usr/local/bin/backup.sh /usr/local/bin/backup-entrypoint.sh \
+ && mkdir -p /backups
+VOLUME ["/backups"]
+ENTRYPOINT ["/usr/local/bin/backup-entrypoint.sh"]

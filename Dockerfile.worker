@@ -1,0 +1,44 @@
+# syntax=docker/dockerfile:1.7
+# Worker-Container (pg-boss) mit PDF-Werkzeugen: poppler-utils (pdftotext, pdftoppm, pdfinfo),
+# ocrmypdf und Tesseract mit Deutsch + Englisch. Der Worker wird mit esbuild zu einer Datei
+# gebündelt (dist/worker.cjs); das Laufzeit-Image braucht kein node_modules.
+
+ARG NODE_BUILD_IMAGE=node:22-alpine
+ARG NODE_RUN_IMAGE=node:22-bookworm-slim
+
+# ---- Build -----------------------------------------------------------------
+FROM ${NODE_BUILD_IMAGE} AS build
+RUN npm install -g pnpm@10.28.0 --no-audit --no-fund
+WORKDIR /app
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN pnpm install --frozen-lockfile
+COPY tsconfig.json ./
+COPY src ./src
+COPY worker ./worker
+COPY drizzle ./drizzle
+RUN pnpm exec esbuild worker/index.ts --bundle --platform=node --target=node22 --format=cjs \
+      --external:pg-native --outfile=dist/worker.cjs
+
+# ---- Laufzeit --------------------------------------------------------------
+FROM ${NODE_RUN_IMAGE} AS runner
+ENV NODE_ENV=production \
+    DEBIAN_FRONTEND=noninteractive \
+    WORKER_TMP_DIR=/tmp/sling-worker
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+      poppler-utils \
+      ocrmypdf \
+      tesseract-ocr \
+      tesseract-ocr-deu \
+      tesseract-ocr-eng \
+      ca-certificates \
+      tini \
+ && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+RUN groupadd -r app && useradd -r -g app -d /app app \
+ && mkdir -p "$WORKER_TMP_DIR" && chown app:app "$WORKER_TMP_DIR"
+COPY --from=build --chown=app:app /app/dist/worker.cjs ./dist/worker.cjs
+USER app
+# tini reicht SIGTERM an node weiter (sauberes Herunterfahren von pg-boss).
+ENTRYPOINT ["/usr/bin/tini", "--"]
+CMD ["node", "dist/worker.cjs"]
