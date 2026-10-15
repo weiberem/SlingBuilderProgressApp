@@ -46,3 +46,6 @@ next-env.d.ts
 /playwright-report
 /test-results
 /backups
+
+# Claude-Worktrees der Build-Agenten
+/.claude/worktrees/
