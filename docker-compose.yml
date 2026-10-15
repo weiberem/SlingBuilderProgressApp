@@ -1,0 +1,112 @@
+# Sling Builder Tracker – Betrieb mit Docker Compose (lokal und VPS identisch).
+# Konfiguration ausschliesslich über .env (siehe .env.example, docs/betrieb.md).
+#   docker compose up -d --build
+#   docker compose exec web node dist/migrate.cjs        # Migrationen von Hand
+#   docker compose logs -f web worker
+
+x-db-url: &db-url postgres://${POSTGRES_USER:-sling}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD in .env setzen}@db:5432/${POSTGRES_DB:-sling}
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      DOMAIN: ${DOMAIN:-http://localhost}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      web:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    image: sling-builder-tracker/web:latest
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: *db-url
+      APP_URL: ${APP_URL:-http://localhost}
+      PORT: "3000"
+      HOSTNAME: 0.0.0.0
+    expose:
+      - "3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    image: sling-builder-tracker/worker:latest
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: *db-url
+      APP_URL: ${APP_URL:-http://localhost}
+    tmpfs:
+      # Temporäre PDF-Verarbeitung; wird nie dauerhaft gespeichert.
+      - /tmp/sling-worker:size=2g
+    depends_on:
+      db:
+        condition: service_healthy
+      web:
+        # Migrationen laufen im web-Container; der Worker startet erst danach.
+        condition: service_healthy
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-sling}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD in .env setzen}
+      POSTGRES_DB: ${POSTGRES_DB:-sling}
+      POSTGRES_INITDB_ARGS: "--locale=C.UTF-8 --encoding=UTF8"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sling} -d ${POSTGRES_DB:-sling}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  backup:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.backup
+    image: sling-builder-tracker/backup:latest
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-Europe/Zurich}
+      PGHOST: db
+      PGPORT: "5432"
+      PGUSER: ${POSTGRES_USER:-sling}
+      PGPASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD in .env setzen}
+      PGDATABASE: ${POSTGRES_DB:-sling}
+      BACKUP_CRON: ${BACKUP_CRON:-30 3 * * *}
+      BACKUP_KEEP_DAYS: ${BACKUP_KEEP_DAYS:-30}
+      BACKUP_ON_START: ${BACKUP_ON_START:-0}
+      RCLONE_REMOTE: ${RCLONE_REMOTE:-}
+    volumes:
+      - ./backups:/backups
+      # rclone-Konfiguration (nur nötig, wenn RCLONE_REMOTE gesetzt ist):
+      - ${RCLONE_CONFIG_DIR:-./docker/rclone}:/config/rclone:ro
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:
+  caddy_data:
+  caddy_config:

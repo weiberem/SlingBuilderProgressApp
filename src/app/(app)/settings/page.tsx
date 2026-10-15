@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { requireUser } from "@/modules/auth/dal";
 import { Card, CardBody, CardHeader, Eyebrow } from "@/components/ui/card";
+import { InstallHint } from "@/components/app/install-hint";
 import { ChangePasswordForm } from "./change-password-form";
 import { ThemeSwitch } from "./theme-switch";
 
@@ -8,7 +9,7 @@ export const metadata = { title: "Einstellungen" };
 
 export default async function SettingsPage() {
   const user = await requireUser();
-  const t = await getTranslations("auth.settings");
+  const [t, tPwa] = await Promise.all([getTranslations("auth.settings"), getTranslations("pwa.install")]);
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-3xl">{t("title")}</h1>
@@ -39,6 +40,14 @@ export default async function SettingsPage() {
         </CardHeader>
         <CardBody>
           <ThemeSwitch />
+        </CardBody>
+      </Card>
+      <Card>
+        <CardHeader>
+          <Eyebrow>{tPwa("title")}</Eyebrow>
+        </CardHeader>
+        <CardBody>
+          <InstallHint />
         </CardBody>
       </Card>
       <Card>

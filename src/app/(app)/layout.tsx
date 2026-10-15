@@ -1,6 +1,7 @@
 import { requireUser } from "@/modules/auth/dal";
 import { listProjectsForUser } from "@/modules/projects/service";
 import { AppShell, type NavItem } from "@/components/app/app-shell";
+import { SwRegister } from "@/components/app/sw-register";
 
 /** Bereich ohne Projektkontext (Projektliste, Einstellungen, Stammdaten). */
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
@@ -13,6 +14,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   }
   return (
     <AppShell nav={nav} userName={user.name} isAdmin={user.isPlatformAdmin}>
+      <SwRegister />
       {children}
     </AppShell>
   );

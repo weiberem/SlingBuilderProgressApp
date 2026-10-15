@@ -1,0 +1,46 @@
+# syntax=docker/dockerfile:1.7
+# Web-Container (Next.js, output: standalone). Beim Start laufen die Migrationen (dist/migrate.cjs),
+# danach node server.js. Keine Secrets im Image: alles kommt zur Laufzeit aus .env (docker compose).
+
+ARG NODE_IMAGE=node:22-alpine
+
+# ---- Abhängigkeiten --------------------------------------------------------
+FROM ${NODE_IMAGE} AS deps
+RUN npm install -g pnpm@10.28.0 --no-audit --no-fund
+WORKDIR /app
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN pnpm install --frozen-lockfile
+
+# ---- Build -----------------------------------------------------------------
+FROM ${NODE_IMAGE} AS build
+RUN npm install -g pnpm@10.28.0 --no-audit --no-fund
+WORKDIR /app
+ENV NEXT_TELEMETRY_DISABLED=1
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+# Service Worker + Next (Turbopack, standalone) + eigenständiges Migrationsskript
+RUN pnpm build \
+ && pnpm exec esbuild scripts/migrate.ts --bundle --platform=node --target=node22 --format=cjs \
+      --external:pg-native --outfile=dist/migrate.cjs
+
+# ---- Laufzeit --------------------------------------------------------------
+FROM ${NODE_IMAGE} AS runner
+ENV NODE_ENV=production \
+    NEXT_TELEMETRY_DISABLED=1 \
+    PORT=3000 \
+    HOSTNAME=0.0.0.0
+WORKDIR /app
+RUN addgroup -S app && adduser -S app -G app
+COPY --from=build --chown=app:app /app/.next/standalone ./
+COPY --from=build --chown=app:app /app/.next/static ./.next/static
+COPY --from=build --chown=app:app /app/public ./public
+COPY --from=build --chown=app:app /app/messages ./messages
+COPY --from=build --chown=app:app /app/drizzle ./drizzle
+COPY --from=build --chown=app:app /app/dist/migrate.cjs ./dist/migrate.cjs
+COPY --chown=app:app docker/web-entrypoint.sh ./docker/web-entrypoint.sh
+RUN chmod +x docker/web-entrypoint.sh
+USER app
+EXPOSE 3000
+HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
+  CMD wget -qO- http://127.0.0.1:3000/offline >/dev/null || exit 1
+ENTRYPOINT ["./docker/web-entrypoint.sh"]
