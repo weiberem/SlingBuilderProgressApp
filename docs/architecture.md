@@ -2,6 +2,8 @@
 
 Stand: 15.10.2026 · Status: **Entwurf zur Freigabe** · Phase 1 (ein Nutzer, ein Projekt HB-YMR)
 
+M1 ist nach diesem Entwurf bereits umgesetzt (siehe `docs/rueckfragen.md`, Frage 8); Änderungen am Entwurf sind weiterhin günstig, solange M2 nicht begonnen hat.
+
 Dieses Dokument beschreibt, wie die App gebaut wird, wie die Daten modelliert sind und welche
 Teile für den späteren Mehrnutzerbetrieb bereits vorbereitet sind, ohne gebaut zu werden.
 Offene Entscheidungen stehen in `docs/rueckfragen.md`.
@@ -211,22 +213,30 @@ interface TrackingProvider {            // link-only | aggregator (später)
 }
 ```
 
-Pro Nutzer eine Verbindung pro Provider (`integration_connections`). Alle Jobs, die Fremddienste aufrufen, laufen im Worker mit Backoff und Fehlerprotokoll. Läuft ein Google-Refresh-Token ab (Testmodus, 7 Tage), setzt der Worker `status=needs_reconnect`, und die UI zeigt «Google neu verbinden».
+Pro Nutzer eine Verbindung pro Provider (`integration_connections`). Alle Jobs, die Fremddienste aufrufen, laufen im Worker mit Backoff und Fehlerprotokoll. Schlägt ein Token-Refresh fehl, setzt der Worker `status=needs_reconnect`, und die UI zeigt «<Provider> neu verbinden».
 
----
+Ergebnisse der Recherche (Details und Quellen in `docs/recherche.md`), die das Design festlegen:
+
+| Provider | Festlegung |
+|---|---|
+| **Google (Gmail, Drive)** | Ein OAuth-Client, Nutzertyp «External» (privates Gmail-Konto, kein «Internal»), Status **«In production» ohne Verifizierung**: im Status «Testing» laufen Refresh-Tokens bei jedem Gmail-/Drive-Scope nach 7 Tagen ab. Scopes: `gmail.readonly`, `gmail.send`, `drive.file` (nicht sensitiv, keine Verifizierung nötig). Unverifiziert mit `gmail.readonly` zeigt Google einmal einen Warnbildschirm und begrenzt die App auf 100 Nutzer insgesamt (Ausnahme «persönliche Nutzung»). Mehrnutzer später: CASA-Assessment oder Umbau auf «nur senden». Fallback ohne OAuth: App-Passwort mit IMAP/SMTP (`ImapSmtpProvider`, Gmail-IMAP liefert `X-GM-THRID`). |
+| **Gmail-Sync** | Polling von `users.history.list` alle 2–5 Minuten mit gespeicherter `historyId`; bei 404 (History zu alt) voller Abgleich. `users.watch` + Pub/Sub nur bei Bedarf (muss täglich erneuert werden). Antworten in den Thread: `threadId` + `In-Reply-To`/`References` + gleicher Betreff. |
+| **Google Drive** | Die App legt den Projektordner selbst an und sieht mit `drive.file` nur, was sie erstellt oder was der Nutzer per **Google Picker** freigibt. Von der App hochgeladene Handbuch-Kopien (M4) sind damit automatisch sichtbar; bereits vorhandene PDFs wählt der Nutzer einmalig im Picker (Mehrfachauswahl; ein gewählter Ordner gibt seine bestehenden Dateien nicht frei). Grosse Dateien per Resumable Upload über den Worker (Chunks als Vielfache von 256 KiB, Session-URI 1 Woche gültig, Wiederaufnahme per `Content-Range: bytes */size`). PDF-Anzeige: `files.get?alt=media` über unseren Server gestreamt und mit PDF.js seitenweise gerendert. |
+| **Microsoft OneDrive** | Entra-App mit «persönliche Microsoft-Konten», Scopes `Files.ReadWrite.All offline_access`. **Kein `sharedWithMe`** (abgekündigt, liefert ab November 2026 keine Daten mehr): Der Nutzer gibt den Freigabe-Link des EAS-Ordners ein, die App löst ihn über `/shares/{u!base64url(link)}/driveItem` mit `Prefer: redeemSharingLink` auf und speichert `driveId` + `itemId` des fremden Laufwerks. Änderungen per Polling der Kinder (eTag/cTag/lastModifiedDateTime), kein Delta auf fremden Ordnern. Uploads per `createUploadSession` (Fragmente als Vielfache von 320 KiB). Word-Kommentare: DOCX laden und `word/comments.xml` lesen (Graph hat keine Kommentar-API für Word). |
+| **Dropbox** | App-Typ «Full Dropbox» (App-Ordner-Apps sehen keine geteilten Ordner), Scopes `files.metadata.read`, `files.content.read`, `sharing.read` (+ `sharing.write`, falls die App den Sling-Ordner selbst einbindet). Status «Development» reicht bis 50 Nutzer. Ordnerwahl über `sharing/list_folders` bzw. `list_mountable_folders`; Änderungen über `files/list_folder` + `list_folder/continue` mit Cursor pro Nutzer, Webhook als Beschleuniger (löst auch bei Uploads von Sling im geteilten Ordner aus). Neue Revision erkannt über `rev` und `content_hash` (SHA-256 über 4-MiB-Blöcke), ohne Download. Download gestreamt mit Range-Wiederaufnahme. |
+| **Sendungsverfolgung** | M3: Link-Vorlagen pro Carrier aus Stammdaten und Carrier-Erkennung aus Nummernformat (UPS `1Z…`, S10-Prüfziffer, Swiss Post 18 Stellen, FedEx 12/15 Stellen …) und Absender-Domain, immer als Vorschlag. Aggregator (Parcels App, Ship24) oder Carrier-APIs (DHL kostenlos, UPS/FedEx mit Konto) später hinter `TrackingProvider`. |
+| **EAS-Dossier** | Vorlagen versioniert als Daten (`eas_templates` + `eas_template_items` mit Nummer, Formular, Verteilung a/b/c, Fristregel als JSON); neue EAS-Version = neue JSON-Datei + Import, kein Code. |
 
 ## 7. Hosting und Betrieb
 
 ```
-docker compose: caddy (TLS, Reverse Proxy) → web (Next.js) ; worker (pg-boss, poppler, ocrmypdf) ; db (postgres:16) ; backup (pg_dump täglich → ./backups + optional rclone nach Drive/S3)
+docker compose: caddy (TLS, Reverse Proxy) → web (Next.js) ; worker (pg-boss, poppler, ocrmypdf) ; db (postgres:16) ; backup (pg_dump täglich → ./backups + optional rclone nach S3/Swift)
 ```
 
-- Ein `.env` mit `DATABASE_URL`, `APP_ENCRYPTION_KEY`, `SESSION_SECRET`, SMTP, OAuth-Client-IDs.
-- Migrationen laufen beim Start von `web` (`drizzle-kit migrate`), Seeds per Kommando (`pnpm seed`), idempotent.
-- Backups: täglicher Dump, 30 Tage Rotation, Wiederherstellung dokumentiert und getestet.
-- Lokal identisch (Docker Desktop oder Podman). Wahl des Hosters: siehe Rückfragen.
-
----
+- Ein `.env` mit `DATABASE_URL`, `APP_ENCRYPTION_KEY`, SMTP, OAuth-Client-IDs.
+- Migrationen laufen beim Start von `web`, Seeds per Kommando (`pnpm seed`), idempotent.
+- Backups: täglicher Dump, 30 Tage Rotation, Wiederherstellung dokumentiert und vierteljährlich getestet.
+- Vorschlag für den Standardbetrieb (siehe Rückfrage 1): Infomaniak VPS Lite in der Schweiz (2 vCPU, 4 GB) plus Infomaniak Swiss Backup, zusammen rund CHF 12 pro Monat; Alternativen EU-VPS oder lokal mit Cloudflare Tunnel. Lokal identisch mit Docker Desktop oder Podman.
 
 ## 8. Design
 
