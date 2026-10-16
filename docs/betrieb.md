@@ -6,7 +6,30 @@ VPS oder den lokalen Betrieb; lokal und auf dem Server laufen dieselben Containe
 
 ## 0. Vercel + EU-Postgres (Zielbetrieb)
 
-Noch nicht eingerichtet; Reihenfolge, sobald die Zugänge vorliegen:
+Das Vercel-Projekt `sling-builder-progress-app` existiert (Stand 16.10.2026), liefert aber `404 NOT_FOUND`.
+Das Repo baut auf Vercel ohne weitere Einstellungen: `vercel-build` (in `package.json`) wendet Migrationen an,
+sät Stammdaten und ersten Nutzer (idempotent, nur wenn `SEED_ADMIN_*` gesetzt) und baut dann die App.
+
+**Checkliste im Vercel-Dashboard** (in dieser Reihenfolge prüfen):
+
+1. **Deployments:** Gibt es ein Deployment mit Status «Ready»? Wenn keines oder nur «Error»: Build-Log öffnen und den
+   Fehlertext weitergeben. Ein 404 auf der Produktions-URL heisst fast immer: kein erfolgreiches Produktions-Deployment.
+2. **Settings → Git:** Repository `weiberem/slingbuilderprogressapp` verbunden, **Production Branch = `master`**
+   (das Repo hat keinen Branch `main`). Nach dem Umstellen: «Redeploy» auf dem letzten Commit oder einen Push abwarten.
+3. **Settings → General:** Framework Preset **Next.js**, Root Directory **leer**, Node.js **22.x**, Build/Install Command
+   auf «Override» **nicht** gesetzt (Vercel nimmt `pnpm install` und `vercel-build` aus `package.json`).
+4. **Settings → Environment Variables** (Production und Preview):
+   - `DATABASE_URL` (Pooler-URL, Port 6543 bei Supabase) und `DIRECT_DATABASE_URL` (Port 5432, für Migrationen). Wird die
+     Datenbank über **Storage → Marketplace (Supabase oder Neon, Region Frankfurt)** angelegt, setzt die Integration
+     `POSTGRES_URL` und `POSTGRES_URL_NON_POOLING`; beide werden automatisch als Ersatz erkannt.
+   - `APP_URL` = `https://<domain>` (ohne Angabe wird die Produktions-URL von Vercel verwendet).
+   - `APP_ENCRYPTION_KEY` (`openssl rand -base64 32`), `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD` (mindestens 8 Zeichen,
+     nach dem ersten Login ändern), `SEED_ADMIN_NAME`.
+   - SMTP-Variablen, sobald der Absender feststeht (Rückfrage 8); ohne SMTP werden Reset-Mails nur geloggt.
+5. **Redeploy.** Danach `/login` aufrufen; Anmeldung mit `SEED_ADMIN_*`. Den Prototyp-Stand einmalig übernehmen:
+   lokal `DATABASE_URL=<direkte URL> pnpm import:prototype seed/hb-ymr/prototype-export-2026-10-15.json`.
+
+Reihenfolge für die vollständige Einrichtung:
 
 1. **Datenbank:** Supabase-Projekt in der Region `eu-central-1` (Frankfurt) anlegen (oder Neon/Vercel Postgres EU).
    Verbindungs-URL mit Pooler (Port 6543, `?pgbouncer=true`) als `DATABASE_URL`, die direkte URL (Port 5432) als
@@ -14,7 +37,7 @@ Noch nicht eingerichtet; Reihenfolge, sobald die Zugänge vorliegen:
    JSON-Export in der App (Dashboard → «Datensicherung», Erinnerung alle 3 Tage).
 2. **Vercel-Projekt** aus dem GitHub-Repo, Framework Next.js, Build `pnpm build`, Node 22. Umgebungsvariablen wie in
    Abschnitt 2 (ohne `DOMAIN`, `POSTGRES_*`, `BACKUP_*`, `RCLONE_*`), zusätzlich `DATABASE_URL`, `DIRECT_DATABASE_URL`.
-   Migrationen vor dem Deploy: `pnpm db:migrate` als Build-Schritt (`vercel-build`) oder manuell von einem Rechner mit `DIRECT_DATABASE_URL`.
+   Migrationen und Seed laufen im Build-Schritt `vercel-build` (`scripts/vercel-build.mjs`), bevorzugt über `DIRECT_DATABASE_URL`.
 3. **Domain:** in Vercel die Subdomain hinzufügen (z. B. `tracker.slingaircraft.ch`; Name mit Remy festlegen) und beim
    DNS-Anbieter von `slingaircraft.ch` einen CNAME auf `cname.vercel-dns.com` setzen. Zertifikat kommt von Vercel.
 4. **Worker:** PDF-Import/OCR (M4) und Mail-Sync (M2) brauchen einen dauerhaft laufenden Prozess mit poppler/ocrmypdf;

@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "pnpm build:sw && next build",
+    "vercel-build": "node scripts/vercel-build.mjs",
     "build:sw": "esbuild src/sw/sw.ts --bundle --minify --outfile=public/sw.js --target=es2020 --define:process.env.NODE_ENV=\\\"production\\\"",
     "start": "next start",
     "lint": "eslint",

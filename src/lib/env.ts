@@ -23,9 +23,20 @@ export type Env = z.infer<typeof schema>;
 
 let cached: Env | null = null;
 
+/**
+ * Vercel-Integrationen (Supabase, Neon, Vercel Postgres) setzen `POSTGRES_URL` statt `DATABASE_URL`.
+ * Diese Namen werden als Ersatz akzeptiert; `DATABASE_URL` hat Vorrang.
+ */
+function withFallbacks(source: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
+  const out: NodeJS.ProcessEnv = { ...source };
+  if (!out.DATABASE_URL) out.DATABASE_URL = source.POSTGRES_URL ?? source.POSTGRES_PRISMA_URL ?? source.POSTGRES_URL_NON_POOLING;
+  if (!out.APP_URL && source.VERCEL_PROJECT_PRODUCTION_URL) out.APP_URL = `https://${source.VERCEL_PROJECT_PRODUCTION_URL}`;
+  return out;
+}
+
 export function env(): Env {
   if (!cached) {
-    const parsed = schema.safeParse(process.env);
+    const parsed = schema.safeParse(withFallbacks(process.env));
     if (!parsed.success) {
       throw new Error(`Ungültige Umgebungsvariablen: ${parsed.error.message}`);
     }
