@@ -189,6 +189,19 @@ export const optionDimensions: SeedOptionDimension[] = [
     sortOrder: 5,
   },
   {
+    code: "electrics_plan",
+    kind: "single",
+    label: { de: "Elektrik: Grundlage" },
+    help: { de: "Die Elektrik ist bei jedem Flugzeug individuell. Nach dem Sling-Schema (Electrics-Handbuch) oder nach einem eigenen Plan (z. B. Panelbauer)? Bei «eigener Plan» werden Equipment-Liste und Schema hochgeladen und daraus die Arbeitsschritte abgeleitet (geplant); die Liste fliesst später in EAS 12.29c und FOCA 53074." },
+    groupCode: "avionics",
+    sortOrder: 0,
+    required: true,
+    values: [
+      { code: "sling_schema", label: { de: "Sling-Schema (Electrics-Handbuch)" }, sortOrder: 1 },
+      { code: "custom", label: { de: "Eigener Plan (Panelbauer / eigenes Schema)" }, sortOrder: 2 },
+    ],
+  },
+  {
     code: "lights",
     kind: "single",
     label: { de: "Lichter" },

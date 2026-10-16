@@ -97,6 +97,13 @@ Diese Punkte stehen auf «weiss ich nicht»; betroffene Seiten bleiben sichtbar 
 
 **Annahme ohne Antwort:** alles bleibt «klären».
 
+## Antworten (laufend)
+
+- **Elektrik (16.10.2026):** Die Elektrik ist immer individuell. Die App fragt im Onboarding «Sling-Schema oder eigener Plan?»
+  (Achse `electrics_plan`, für HB-YMR «eigener Plan», Panelbauer). Bei eigenem Plan: Upload der Equipment-Liste (nötig) und
+  optional des Schemas; daraus werden die Arbeitsschritte abgeleitet. Umsetzung mit M4 (Upload nach Drive) bzw. als eigener Schritt;
+  offene Detailfragen siehe unten.
+
 ## 7. EAS-Stammdaten aus deiner Korrespondenz übernehmen?
 
 In deinem Postfach finden sich: EAS-Projekt Typ 1 (BAZL-EAS-Vereinbarung 79000693), Projektregistrierung 21.11.2023,

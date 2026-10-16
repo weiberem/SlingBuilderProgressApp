@@ -21,6 +21,7 @@ export const hbYmr: SeedProject = {
     tanks_note: { text: "198 L + Long Range 50 L mit Transferpumpen" },
     canopy_version: { unknown: true },
     autopilot_servos: { codes: ["roll", "pitch", "yaw"], note: "Garmin GFC 500 mit 3 Servos" },
+    electrics_plan: { codes: ["custom"], note: "Plan des Panelbauers (Midwest Panel Builders, Adam O'Connor)" },
     avionics_platform: { codes: ["garmin_axis"] },
     avionics_details: { text: "Garmin AXIS (2× GDU 116BX), GTN 750Xi, GFC 500 (3 Servos), G5" },
     o2_system: { text: "Aithre" },
