@@ -14,10 +14,13 @@ sät Stammdaten und ersten Nutzer (idempotent, nur wenn `SEED_ADMIN_*` gesetzt) 
 
 1. **Deployments:** Gibt es ein Deployment mit Status «Ready»? Wenn keines oder nur «Error»: Build-Log öffnen und den
    Fehlertext weitergeben. Ein 404 auf der Produktions-URL heisst fast immer: kein erfolgreiches Produktions-Deployment.
-2. **Settings → Git:** Repository `weiberem/slingbuilderprogressapp` verbunden, **Production Branch = `master`**
-   (das Repo hat keinen Branch `main`). Nach dem Umstellen: «Redeploy» auf dem letzten Commit oder einen Push abwarten.
-3. **Settings → General:** Framework Preset **Next.js**, Root Directory **leer**, Node.js **22.x**, Build/Install Command
-   auf «Override» **nicht** gesetzt (Vercel nimmt `pnpm install` und `vercel-build` aus `package.json`).
+2. **Settings → Git:** Repository `weiberem/slingbuilderprogressapp` verbunden. Production Branch ist dort `main`
+   (Stand 16.10.2026); das Repo arbeitet auf `master`, deshalb wird jeder Stand auf beide Branches gepusht, bis entweder die
+   Production Branch auf `master` steht oder `main` zum Hauptbranch wird.
+3. **Settings → General:** Framework Preset **Next.js** (wird zusätzlich durch `vercel.json` erzwungen; ein Preset «Other»
+   liefert nur statische Dateien und damit `404 NOT_FOUND` auf jeder Seite), Root Directory **leer**, Node.js **22.x**,
+   Build/Install/Output auf «Override» **nicht** gesetzt (Vercel nimmt `pnpm install` und `vercel-build` aus `package.json`).
+   Functions laufen in `fra1` (Frankfurt, nahe bei der Datenbank; `vercel.json`).
 4. **Settings → Environment Variables** (Production und Preview):
    - `DATABASE_URL` (Pooler-URL, Port 6543 bei Supabase) und `DIRECT_DATABASE_URL` (Port 5432, für Migrationen). Wird die
      Datenbank über **Storage → Marketplace (Supabase oder Neon, Region Frankfurt)** angelegt, setzt die Integration
