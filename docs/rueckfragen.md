@@ -99,6 +99,9 @@ Diese Punkte stehen auf «weiss ich nicht»; betroffene Seiten bleiben sichtbar 
 
 ## Antworten (laufend)
 
+- **Design (16.10.2026):** Remy hat das Design-System «Sling Aircraft Switzerland» (aus dem Kit-Configurator) geliefert.
+  Die App ist darauf umgestellt: dunkles Thema als Standard, Sling-Rot `#dc1f26`, Inter, SVG-Logo. Frage 5 ist damit beantwortet;
+  die Freigabe von slingaircraft.ch in der Netzwerkrichtlinie ist nicht mehr nötig.
 - **Elektrik (16.10.2026):** Die Elektrik ist immer individuell. Die App fragt im Onboarding «Sling-Schema oder eigener Plan?»
   (Achse `electrics_plan`, für HB-YMR «eigener Plan», Panelbauer). Bei eigenem Plan: Upload der Equipment-Liste (nötig) und
   optional des Schemas; daraus werden die Arbeitsschritte abgeleitet. Umsetzung mit M4 (Upload nach Drive) bzw. als eigener Schritt;

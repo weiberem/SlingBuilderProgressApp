@@ -240,13 +240,13 @@ docker compose: caddy (TLS, Reverse Proxy) → web (Next.js) ; worker (pg-boss, 
 
 ## 8. Design
 
-Quelle in Phase 1: das Logo «Sling Aircraft Switzerland» (schwarzer Grund, weisser Schriftzug, rotes Akzent-Element, Schweizer Fahne). Die Website slingaircraft.ch war aus der Build-Umgebung nicht erreichbar (Netzwerkrichtlinie), deshalb sind alle Farben und Schriften als **Tokens in einer Datei** (`src/styles/tokens.css`) hinterlegt und werden nach Sichtung der Website in einem Schritt angeglichen.
+Quelle: das Design-System «Sling Aircraft Switzerland» (claude.ai/artifact/BEPTnT3LAopDCi79qyJX2b, aus dem Kit-Configurator, Stand 16.10.2026).
+Dark-first auf Nachtschwarz `#0a0a0c`, Flächen in feinen Stufen (`#16161a`, `#1c1c22`) mit Rahmen statt Schatten, **ein Akzent** Sling-Rot `#dc1f26`
+(Hover `#ff3a42`, Tönung 12 %), Status-Farben Grün `#4ade80` und Gelb `#facc15` nur für Zustände, **Inter** als einzige Schrift (Versal-Labels mit 0.12 em Sperrung,
+Mono für Zahlen), Radien 8/10/14 px. Alle Werte liegen in `src/styles/tokens.css`; das dunkle Thema ist Standard, «Hell» (Weiss, Text `#16161a`, Rot unverändert)
+und «System» sind in den Einstellungen wählbar. Das Logo ist die weisse SVG-Wortmarke mit rotem Akzent aus dem Design-System (nur auf dunklen Flächen).
 
-Tokens (Entwurf): Hintergrund Weiss `#FFFFFF`, Fläche `#F4F4F5`, Text `#111111`, Kopfleiste Schwarz `#000000`, Akzent Rot `#C00000` (Hover `#A30000`), Linien `#D4D4D8`, Status-Farben: erledigt Grün `#2E7D32`, in Arbeit Blau `#1565C0`, Problem Orange `#E65100`, trifft nicht zu Grau `#8C969F`. Typografie: Überschriften in einer schmalen, gesperrten Grotesk (wie im Logo), Fliesstext in einer gut lesbaren Sans. Dunkelmodus vorbereitet.
-
-Bedienung: Touch-Ziele mindestens 48 px, Seiten-Chips 56 px, Kontrast AA, Bedienung mit Handschuhen (keine Hover-Only-Funktionen, keine Doppeltipps). Mobile zuerst.
-
----
+Bedienung: Touch-Ziele mindestens 48 px, Seiten-Chips 56 px, Kontrast AA in beiden Themen, Bedienung mit Handschuhen (keine Hover-Only-Funktionen, keine Doppeltipps). Mobile zuerst.
 
 ## 9. Vorbereitet für Mehrnutzerbetrieb (nicht gebaut)
 

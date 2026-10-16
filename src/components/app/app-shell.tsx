@@ -53,7 +53,7 @@ export function AppShell({
         <div className="mx-auto flex h-16 max-w-5xl items-center gap-3 px-4">
           <Brand compact={!!registration} />
           {registration ? (
-            <span className="rounded bg-brand-red px-2 py-1 font-display text-sm font-bold tracking-[0.12em] text-on-red">{registration}</span>
+            <span className="whitespace-nowrap rounded bg-brand-red px-2 py-1 font-display text-sm font-bold tracking-[0.08em] text-on-red">{registration}</span>
           ) : null}
           <nav className="ml-auto hidden items-center gap-1 md:flex" aria-label="Hauptnavigation">
             {nav.map((n) => {

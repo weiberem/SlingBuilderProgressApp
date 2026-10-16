@@ -11,9 +11,9 @@ const listeners = new Set<() => void>();
 function readTheme(): Theme {
   try {
     const stored = localStorage.getItem("theme");
-    return stored === "light" || stored === "dark" ? stored : "system";
+    return stored === "light" || stored === "system" ? stored : "dark";
   } catch {
-    return "system";
+    return "dark";
   }
 }
 
@@ -24,7 +24,7 @@ function subscribe(cb: () => void) {
 
 function writeTheme(next: Theme) {
   try {
-    if (next === "system") {
+    if (next === "dark") {
       localStorage.removeItem("theme");
       delete document.documentElement.dataset.theme;
     } else {
@@ -37,8 +37,8 @@ function writeTheme(next: Theme) {
 
 export function ThemeSwitch() {
   const t = useTranslations("auth.settings");
-  const theme = useSyncExternalStore(subscribe, readTheme, () => "system" as Theme);
-  const options: Theme[] = ["system", "light", "dark"];
+  const theme = useSyncExternalStore(subscribe, readTheme, () => "dark" as Theme);
+  const options: Theme[] = ["dark", "light", "system"];
   return (
     <div role="radiogroup" className="flex flex-wrap gap-2">
       {options.map((o) => (

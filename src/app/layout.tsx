@@ -1,11 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Montserrat } from "next/font/google";
+import { Inter } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import "./globals.css";
 
-const body = Inter({ subsets: ["latin"], variable: "--font-body", display: "swap" });
-const display = Montserrat({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--font-display", display: "swap" });
+const body = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-body", display: "swap" });
 
 export const metadata: Metadata = {
   title: { default: "Sling Builder Tracker", template: "%s · Sling Builder Tracker" },
@@ -17,20 +16,21 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#000000",
+  themeColor: "#0a0a0c",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
 };
 
 // Setzt das gespeicherte Farbschema vor dem ersten Rendern (verhindert Flackern).
-const themeScript = `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light'){document.documentElement.dataset.theme=t;}}catch(e){}})();`;
+// Standard ist dunkel (Marke); «light» und «system» werden aus dem Speicher gesetzt.
+const themeScript = `(function(){try{var t=localStorage.getItem('theme');if(t==='light'||t==='system'||t==='dark'){document.documentElement.dataset.theme=t;}}catch(e){}})();`;
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = await getLocale();
   const messages = await getMessages();
   return (
-    <html lang={locale} className={`${body.variable} ${display.variable} h-full`} suppressHydrationWarning>
+    <html lang={locale} className={`${body.variable} h-full`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>

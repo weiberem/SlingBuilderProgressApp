@@ -26,10 +26,13 @@
   --color-status-clarify: var(--status-clarify);
   --color-status-clarify-soft: var(--status-clarify-soft);
   --font-sans: var(--font-body), "Segoe UI", Helvetica, Arial, sans-serif;
-  --font-display: var(--font-display), "Arial Narrow", Arial, sans-serif;
+  --font-display: var(--font-body), "Segoe UI", Helvetica, Arial, sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --radius-DEFAULT: var(--radius);
+  --radius-sm: var(--radius-sm);
   --radius-lg: var(--radius-lg);
+  --color-surface-hover: var(--surface-hover);
+  --color-ink-faint: var(--ink-faint);
 }
 
 html {
@@ -54,16 +57,20 @@ h2,
 h3 {
   font-family: var(--font-display);
   font-weight: 700;
-  letter-spacing: 0.01em;
+  letter-spacing: -0.01em;
   text-wrap: balance;
+}
+
+h1 {
+  font-weight: 800;
 }
 
 /* Überschriften-Label im Stil des Logos: gesperrte Versalien */
 .eyebrow {
   font-family: var(--font-display);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.18em;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ink-muted);
 }

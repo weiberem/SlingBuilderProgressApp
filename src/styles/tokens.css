@@ -1,94 +1,102 @@
 /*
  * Design-Tokens «Sling Aircraft Switzerland».
- * Quelle in Phase 1: Logo (schwarzer Grund, weisser Schriftzug, rotes Akzent-Element, Schweizer Fahne).
- * Die Website slingaircraft.ch war aus der Build-Umgebung nicht erreichbar; nach Sichtung werden
- * nur diese Werte angepasst (docs/architecture.md, Abschnitt 8).
+ * Quelle: Design-System der Marke (claude.ai/artifact/BEPTnT3LAopDCi79qyJX2b, aus dem Kit-Configurator,
+ * Stand 16.10.2026): dark-first auf Nachtschwarz, ein Akzent Sling-Rot #dc1f26, Inter als einzige Schrift,
+ * Flächen durch feine Stufen und Rahmen statt Schatten, Radien 8/10/14 px.
+ * Standard ist das dunkle Thema. «Hell» (Briefe, helle Bereiche): Weiss als Grund, #16161a als Text, Rot unverändert.
  */
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 
-  --bg: #ffffff;
-  --surface: #f5f5f4;
-  --surface-2: #eaeae8;
-  --ink: #111111;
-  --ink-muted: #5c5c5c;
-  --line: #d9d9d6;
-  --line-strong: #b8b8b4;
+  --bg: #0a0a0c;
+  --surface: #16161a;
+  --surface-2: #1c1c22;
+  --surface-hover: #20202a;
+  --ink: #ffffff;
+  --ink-muted: #b8b8c2;
+  --ink-faint: #7a7a85;
+  --line: #26262e;
+  --line-strong: #34343f;
 
-  --brand-black: #000000;
+  --brand-black: #0a0a0c;
   --brand-white: #ffffff;
-  --brand-red: #c00000;
-  --brand-red-hover: #a30000;
-  --brand-red-soft: #fbe9e9;
+  --brand-red: #dc1f26;
+  --brand-red-hover: #ff3a42;
+  --brand-red-soft: rgba(220, 31, 38, 0.12);
   --on-red: #ffffff;
 
-  --status-done: #2e7d32;
-  --status-done-soft: #e3f1e4;
-  --status-progress: #1565c0;
-  --status-progress-soft: #e3ecf8;
-  --status-problem: #e65100;
-  --status-problem-soft: #fdebdd;
-  --status-na: #8c969f;
-  --status-na-soft: #eceff1;
-  --status-clarify: #9a6b00;
-  --status-clarify-soft: #fbf1d6;
+  --status-done: #4ade80;
+  --status-done-soft: #14301f;
+  --status-progress: #60a5fa;
+  --status-progress-soft: #152238;
+  --status-problem: #fb923c;
+  --status-problem-soft: #3a2210;
+  --status-na: #7a7a85;
+  --status-na-soft: #1c1c22;
+  --status-clarify: #facc15;
+  --status-clarify-soft: #332b0a;
 
-  --radius: 6px;
-  --radius-lg: 10px;
+  --radius: 10px;
+  --radius-sm: 8px;
+  --radius-lg: 14px;
   --touch: 48px;
   --chip: 56px;
 
-  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 1px rgba(0, 0, 0, 0.04);
+  /* Einziger Schatten: schwebende Elemente (Dialoge, Menüs). Karten nutzen Rahmen. */
+  --shadow-1: none;
+  --shadow-float: 0 12px 32px rgba(0, 0, 0, 0.4);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
-    --bg: #0e0e0f;
-    --surface: #1a1a1b;
-    --surface-2: #242426;
-    --ink: #f2f2f2;
-    --ink-muted: #a0a0a0;
-    --line: #2e2e30;
-    --line-strong: #4a4a4d;
-    --brand-red: #e53935;
-    --brand-red-hover: #ff5252;
-    --brand-red-soft: #3a1414;
-    --status-done: #66bb6a;
-    --status-done-soft: #1b3a1d;
-    --status-progress: #64b5f6;
-    --status-progress-soft: #15283d;
-    --status-problem: #ffa726;
-    --status-problem-soft: #3d2a12;
-    --status-na: #7b858e;
-    --status-na-soft: #26292c;
-    --status-clarify: #e0b24c;
-    --status-clarify-soft: #3a2f10;
-    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.5);
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #ffffff;
+  --surface: #f6f6f8;
+  --surface-2: #ececf0;
+  --surface-hover: #e4e4ea;
+  --ink: #16161a;
+  --ink-muted: #5f5f6a;
+  --ink-faint: #7a7a85;
+  --line: #e1e1e7;
+  --line-strong: #c4c4cd;
+  --brand-red-hover: #b8171d;
+  --brand-red-soft: rgba(220, 31, 38, 0.1);
+  --status-done: #15803d;
+  --status-done-soft: #dcfce7;
+  --status-progress: #1d4ed8;
+  --status-progress-soft: #dbeafe;
+  --status-problem: #c2410c;
+  --status-problem-soft: #ffedd5;
+  --status-na: #6b6b76;
+  --status-na-soft: #ececf0;
+  --status-clarify: #a16207;
+  --status-clarify-soft: #fef3c7;
+  --shadow-float: 0 12px 32px rgba(0, 0, 0, 0.18);
+}
+
+@media (prefers-color-scheme: light) {
+  :root[data-theme="system"] {
+    color-scheme: light;
+    --bg: #ffffff;
+    --surface: #f6f6f8;
+    --surface-2: #ececf0;
+    --surface-hover: #e4e4ea;
+    --ink: #16161a;
+    --ink-muted: #5f5f6a;
+    --ink-faint: #7a7a85;
+    --line: #e1e1e7;
+    --line-strong: #c4c4cd;
+    --brand-red-hover: #b8171d;
+    --brand-red-soft: rgba(220, 31, 38, 0.1);
+    --status-done: #15803d;
+    --status-done-soft: #dcfce7;
+    --status-progress: #1d4ed8;
+    --status-progress-soft: #dbeafe;
+    --status-problem: #c2410c;
+    --status-problem-soft: #ffedd5;
+    --status-na: #6b6b76;
+    --status-na-soft: #ececf0;
+    --status-clarify: #a16207;
+    --status-clarify-soft: #fef3c7;
+    --shadow-float: 0 12px 32px rgba(0, 0, 0, 0.18);
   }
-}
-
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --bg: #0e0e0f;
-  --surface: #1a1a1b;
-  --surface-2: #242426;
-  --ink: #f2f2f2;
-  --ink-muted: #a0a0a0;
-  --line: #2e2e30;
-  --line-strong: #4a4a4d;
-  --brand-red: #e53935;
-  --brand-red-hover: #ff5252;
-  --brand-red-soft: #3a1414;
-  --status-done: #66bb6a;
-  --status-done-soft: #1b3a1d;
-  --status-progress: #64b5f6;
-  --status-progress-soft: #15283d;
-  --status-problem: #ffa726;
-  --status-problem-soft: #3d2a12;
-  --status-na: #7b858e;
-  --status-na-soft: #26292c;
-  --status-clarify: #e0b24c;
-  --status-clarify-soft: #3a2f10;
-  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.5);
 }

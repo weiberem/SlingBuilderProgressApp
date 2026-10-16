@@ -53,7 +53,7 @@ und was ungeklärt ist. Offene Fragen an Remy stehen in `docs/rueckfragen.md`.
 - **Bauberater-Visa** werden angezeigt, aber es gibt noch keine Eingabe (kein Advisor-Login in Phase 1); kommt mit dem EAS-Modul.
 - Fehlteile lassen sich nach dem Anlegen nur im Status ändern oder löschen, nicht bearbeiten; keine manuelle Sortierung von Zusatzarbeiten.
 - Importierte Seiten tragen als «erledigt am» den 15.10.2026, weil der Prototyp keine Daten speicherte (Notiz weist darauf hin).
-- Design: slingaircraft.ch war nicht erreichbar; Farben und Schriften stammen aus dem Logo und liegen in `src/styles/tokens.css` (Rückfrage 5).
+- Design (nachgetragen 16.10.2026): auf das Design-System «Sling Aircraft Switzerland» umgestellt (dark-first, Sling-Rot, Inter, SVG-Logo); Tokens in `src/styles/tokens.css`.
 
 ## Was ungeklärt ist
 
