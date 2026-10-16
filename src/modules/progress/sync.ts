@@ -69,7 +69,7 @@ export async function applySyncBatch(ctx: ProjectContext, changes: SyncChange[])
           pageId: p.pageId,
           status: p.status,
           naReason: p.naReason ?? null,
-          doneAt: p.doneAt ?? null,
+          doneAt: p.doneAt,
           note: p.note,
           clientChangeId: change.clientChangeId,
         });

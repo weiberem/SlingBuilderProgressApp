@@ -17,18 +17,19 @@ export const hbYmr: SeedProject = {
     parachute: { codes: ["none"] },
     brakes: { codes: ["beringer"] },
     brake_control: { codes: ["toe_dual"] },
-    tanks: { codes: ["standard_198", "long_range"], note: "Long Range 50 L mit Transferpumpen (Handbuch: 52 L)." },
+    tanks: { codes: ["standard_198", "long_range"], note: "Long Range 2 × 25 L mit Transferpumpen (Handbuch: 52 L)." },
     tanks_note: { text: "198 L + Long Range 50 L mit Transferpumpen" },
-    canopy_version: { unknown: true },
+    canopy_version: { codes: ["2023"], note: "Antwort Remy 16.10.2026" },
     autopilot_servos: { codes: ["roll", "pitch", "yaw"], note: "Garmin GFC 500 mit 3 Servos" },
     electrics_plan: { codes: ["custom"], note: "Plan des Panelbauers (Midwest Panel Builders, Adam O'Connor)" },
     avionics_platform: { codes: ["garmin_axis"] },
     avionics_details: { text: "Garmin AXIS (2× GDU 116BX), GTN 750Xi, GFC 500 (3 Servos), G5" },
     o2_system: { text: "Aithre" },
     extra_pumps: { unknown: true },
-    lights: { unknown: true },
+    /** Laut Schema des Panelbauers (28.08.2026): Aveo-Tip-Lights und -Beacon plus Landescheinwerfer mit Wig-Wag-Schalter; Antwort «Lichter korrekt» ist mehrdeutig → offen (Rückfrage). */
+    lights: { unknown: true, note: "Schema Midwest 28.08.2026: Aveo Nav/Strobe-Tip-Lights, Aveo Beacon, Landescheinwerfer links/rechts mit Land/Wig-Wag-Schalter, Taxi-Licht" },
   },
-  /** Build-Art je Baugruppe ist im Auftrag nicht angegeben → offen (Rückfrage). */
+  /** Build-Art je Baugruppe ist im Auftrag nicht angegeben; Antwort vom 16.10.2026 («A, korrekt») ist nicht eindeutig → offen (Rückfrage). */
   buildTypes: {
     empennage: "unknown",
     wing: "unknown",

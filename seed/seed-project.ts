@@ -1,4 +1,4 @@
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import type { Db } from "@/lib/db";
 import { logger } from "@/lib/logger";
 import { users } from "@/modules/auth/schema";
@@ -80,10 +80,16 @@ export async function seedProject(db: Db, ownerUserId: string, seed: SeedProject
   for (const [code, answer] of Object.entries(seed.options)) {
     const dim = dimByCode.get(code);
     if (!dim) throw new Error(`Projekt-Seed: Achse ${code} unbekannt`);
+    // Antworten des Erbauers werden nie überschrieben. Einzige Ausnahme: eine noch offene Antwort
+    // («weiss ich nicht») wird durch eine inzwischen bekannte Seed-Antwort ersetzt (nachgereichte Klärung).
     await db
       .insert(projectOptions)
       .values({ projectId, dimensionId: dim.id, value: answer, updatedBy: ownerUserId })
-      .onConflictDoNothing();
+      .onConflictDoUpdate({
+        target: [projectOptions.projectId, projectOptions.dimensionId],
+        set: { value: answer, updatedBy: ownerUserId },
+        setWhere: answer.unknown ? sql`false` : sql`(${projectOptions.value}->>'unknown')::boolean is true`,
+      });
   }
 
   for (const [group, bt] of Object.entries(seed.buildTypes)) {

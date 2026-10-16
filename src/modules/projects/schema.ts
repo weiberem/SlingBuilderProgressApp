@@ -39,6 +39,8 @@ export const projects = pgTable("projects", {
 export type ProjectSettings = {
   /** Onboarding abgeschlossen? */
   onboardingCompletedAt?: string;
+  /** Letzter JSON-Export (Datensicherung durch den Erbauer); Basis für die Erinnerung. */
+  lastExportAt?: string;
 };
 
 /** Mitgliedschaften. Phase 1: nur der Owner. Rollen-UI kommt später. */

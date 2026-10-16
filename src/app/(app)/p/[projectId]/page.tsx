@@ -7,6 +7,10 @@ import { countOpenTasks } from "@/modules/progress/tasks-service";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardBody, CardHeader, Eyebrow } from "@/components/ui/card";
 import { ProgressBar } from "@/components/ui/progress-bar";
+import { EXPORT_REMINDER_DAYS, exportReminder } from "@/modules/projects/export-service";
+import { formatDateTime } from "@/lib/format";
+import { buttonClass } from "@/components/ui/button";
+import { Download } from "lucide-react";
 
 export const metadata = { title: "Bau" };
 
@@ -22,6 +26,7 @@ export default async function ProjectDashboard({ params }: { params: Promise<{ p
   ]);
   const total = overview.total;
   const setupDone = !!project.settings.onboardingCompletedAt;
+  const reminder = exportReminder(project.settings);
 
   return (
     <div className="flex flex-col gap-5">
@@ -97,6 +102,34 @@ export default async function ProjectDashboard({ params }: { params: Promise<{ p
           ))}
         </ul>
       </section>
+
+      <Card aria-labelledby="backup-h" className={reminder.due ? "border-status-clarify/60" : undefined}>
+        <CardHeader>
+          <div>
+            <Eyebrow>{t("backup.title")}</Eyebrow>
+            <h2 id="backup-h" className="text-xl">
+              {reminder.daysSince === null
+                ? t("backup.dueNever")
+                : reminder.due
+                  ? t("backup.due", { days: reminder.daysSince })
+                  : t("backup.ok", { days: reminder.daysSince, reminderDays: EXPORT_REMINDER_DAYS })}
+            </h2>
+          </div>
+          {reminder.due ? <Badge tone="clarify">{t("backup.title")}</Badge> : null}
+        </CardHeader>
+        <CardBody className="flex flex-col gap-3">
+          <p className="text-sm text-ink-muted">{t("backup.lead")}</p>
+          <div className="flex flex-wrap items-center gap-3">
+            <a href={`/api/p/${projectId}/export.json`} download className={buttonClass(reminder.due ? "primary" : "secondary", "md", "no-underline")}>
+              <Download className="size-5" aria-hidden />
+              {t("backup.download")}
+            </a>
+            <span className="text-xs text-ink-muted">
+              {reminder.lastExportAt ? t("backup.last", { date: formatDateTime(reminder.lastExportAt) }) : t("backup.never")} · {t("backup.contains")}
+            </span>
+          </div>
+        </CardBody>
+      </Card>
     </div>
   );
 }

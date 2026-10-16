@@ -107,6 +107,48 @@ Diese Punkte stehen auf «weiss ich nicht»; betroffene Seiten bleiben sichtbar 
   optional des Schemas; daraus werden die Arbeitsschritte abgeleitet. Umsetzung mit M4 (Upload nach Drive) bzw. als eigener Schritt;
   offene Detailfragen siehe unten.
 
+- **Antworten vom 16.10.2026 (Sprachnachricht), umgesetzt oder festgehalten:**
+  - **1 Hosting:** Vercel (Konto vorhanden), Datenschutz kein Thema, EU in Ordnung; App unter einer Subdomain von
+    `slingaircraft.ch`. Festgehalten in `docs/architecture.md` (§1, §7) und `docs/betrieb.md` (§0); Einrichtung folgt,
+    sobald Zugänge (Vercel, Postgres-Anbieter, DNS) vorliegen. Backup vorerst manuell: **JSON-Export** des ganzen Projekts
+    auf dem Dashboard («Datensicherung») mit **Erinnerung alle 3 Tage**; gebaut.
+  - **2 Gmail:** Variante (a). Anleitung für das Google-Cloud-Projekt kommt mit M2.
+  - **3 Sendungsverfolgung:** Links (M3).
+  - **4 Beilagen:** EAS-PDFs reichst du nach. 4c: importierte Seiten tragen jetzt **kein Datum** («unbekannt»); gebaut, bestehende Zeilen bereinigt.
+  - **5 Design:** erledigt (siehe oben).
+  - **6 Onboarding:** Canopy-Version **2023** gesetzt (ältere Versionen kaum noch im Umlauf; Hilfetext weist darauf hin, dass
+    ältere Seiten Hinweise für die neuere enthalten können, sie bleiben als «trifft nicht zu» einsehbar). Tanks: Long Range =
+    **2 × 25 L** Zusatztanks; Regel «Rib 26 (Wing S. 32) nur ohne Long Range» **bestätigt**, die Seite fällt für HB-YMR weg.
+    Finishing: **kein QB-Hinweis** mehr auf den Seiten, der Erbauer macht das Finishing immer selbst; Bedeutung
+    «assembled by Sling» = bei Quick Build ab Werk erledigt, «not assembled by Sling» = Erbauer, Zuordnung je Seite beim
+    Import (M4). Motor: nur noch 916 iS, Option «eigener Motor» ergänzt, Aliase bleiben.
+  - **7 EAS:** Typ 1 korrekt, Stammdaten dürfen gesät werden (M5). Kein Abnahmedatum definiert; stattdessen gewünscht:
+    **Meilensteinkalender** mit Rückwärtsplanung ab Zielterminen (AERO Friedrichshafen, Oshkosh), einblendbar und als A3/A2
+    druckbar → als M7 in `docs/architecture.md` §11 aufgenommen.
+  - **8 Stack:** bestätigt («entscheide, was am besten ist»). Mail-Absender: siehe offen.
+  - **Elektrik:** Grundlage ist Adams Offerte und sein Schema (letzte Version massgebend). Geräteliste HB-YMR aus Rechnungen,
+    Offerte und Schema zusammengestellt: `seed/hb-ymr/electrics/equipment.json`, Erläuterung und Vorschlag in `docs/elektrik-hb-ymr.md`.
+
+## Offen (Stand 16.10.2026, kurz)
+
+1. **Build-Art je Baugruppe:** «6a, korrekt» ist mehrdeutig. Welche Baugruppen von Kit 575 sind Quick Build
+   (Empennage, Wing, Fuselage, Undercarriage, Canopy, FWF)? Bis zur Antwort bleibt alles «unbekannt»; Wirkung hat das erst,
+   wenn QB-Hinweise seitenweise aus den Handbüchern gelesen sind (M4).
+2. **Lichter:** «Lichter korrekt» – was ist verbaut? Laut Adams Schema: Aveo Nav/Strobe-Tip-Lights, Aveo Beacon,
+   Landescheinwerfer mit Land/Wig-Wag-Schalter, Taxi-Licht. Wenn das stimmt, setze ich «Aveo» plus Wig-Wag und bestätige
+   die Regel für Wing S. 22.
+3. **«4b: kannst du auf Zero stellen»:** Meinst du, der importierte Prototyp-Stand (85 Seiten erledigt, 33 Zusatzarbeiten)
+   soll **gelöscht** werden und du hakst neu ab? Ich lösche nichts ohne ausdrückliches Ja. Oder war nur das Datum gemeint
+   (das ist jetzt «unbekannt»)?
+4. **Geräteliste Elektrik:** Adams Offerte (Estimate 1132, 09.09.2026) wurde laut deiner Mail «für einen Flugclub» angefragt
+   und weicht von deinen Rechnungen und vom Onboarding ab (GDU 460 vs. GDU 116BX, GTX 35R vs. 45R, 2 oder 3 Servos,
+   GAD 27, GAP 26, zweite IBBS, zweiter GAD 29). Die 19 offenen Positionen stehen in `docs/elektrik-hb-ymr.md`; bitte kurz
+   durchgehen oder mir sagen, welche Quelle gilt.
+5. **System-Mails:** Absender `info@slingaircraft.ch` (SMTP-Zugang) oder ein Versanddienst (Resend/Brevo, braucht
+   SPF/DKIM-Einträge für `slingaircraft.ch`)? Ich empfehle Resend mit Subdomain `mail.slingaircraft.ch`.
+6. **Fuselage 8.5 und FWF 4.4:** letzte Bauseite (Seitenzahl), damit die Seiten bis zur OCR (M4) abhakbar sind.
+7. **Subdomain:** z. B. `tracker.slingaircraft.ch` oder `app.slingaircraft.ch`? Wer pflegt das DNS?
+
 ## 7. EAS-Stammdaten aus deiner Korrespondenz übernehmen?
 
 In deinem Postfach finden sich: EAS-Projekt Typ 1 (BAZL-EAS-Vereinbarung 79000693), Projektregistrierung 21.11.2023,

@@ -1,7 +1,30 @@
 # Betrieb – Sling Builder Tracker
 
-Stand: 15.10.2026. Betrieb auf einem kleinen VPS (2 vCPU, 4 GB RAM, 40 GB SSD, z. B. Infomaniak VPS Lite in
-der Schweiz) mit Docker Compose. Lokal und auf dem Server laufen dieselben Container.
+Stand: 16.10.2026. **Zielbetrieb laut Entscheid vom 16.10.2026: Vercel + verwaltetes PostgreSQL in der EU**
+(Abschnitt 0). Der Docker-Compose-Stack (Abschnitte 1–7) bleibt die gleichwertige Alternative für einen
+VPS oder den lokalen Betrieb; lokal und auf dem Server laufen dieselben Container.
+
+## 0. Vercel + EU-Postgres (Zielbetrieb)
+
+Noch nicht eingerichtet; Reihenfolge, sobald die Zugänge vorliegen:
+
+1. **Datenbank:** Supabase-Projekt in der Region `eu-central-1` (Frankfurt) anlegen (oder Neon/Vercel Postgres EU).
+   Verbindungs-URL mit Pooler (Port 6543, `?pgbouncer=true`) als `DATABASE_URL`, die direkte URL (Port 5432) als
+   `DIRECT_DATABASE_URL` für Migrationen. Supabase sichert täglich (Pro-Plan, 7 Tage); zusätzlich bleibt der manuelle
+   JSON-Export in der App (Dashboard → «Datensicherung», Erinnerung alle 3 Tage).
+2. **Vercel-Projekt** aus dem GitHub-Repo, Framework Next.js, Build `pnpm build`, Node 22. Umgebungsvariablen wie in
+   Abschnitt 2 (ohne `DOMAIN`, `POSTGRES_*`, `BACKUP_*`, `RCLONE_*`), zusätzlich `DATABASE_URL`, `DIRECT_DATABASE_URL`.
+   Migrationen vor dem Deploy: `pnpm db:migrate` als Build-Schritt (`vercel-build`) oder manuell von einem Rechner mit `DIRECT_DATABASE_URL`.
+3. **Domain:** in Vercel die Subdomain hinzufügen (z. B. `tracker.slingaircraft.ch`; Name mit Remy festlegen) und beim
+   DNS-Anbieter von `slingaircraft.ch` einen CNAME auf `cname.vercel-dns.com` setzen. Zertifikat kommt von Vercel.
+4. **Worker:** PDF-Import/OCR (M4) und Mail-Sync (M2) brauchen einen dauerhaft laufenden Prozess mit poppler/ocrmypdf;
+   dafür den `worker`-Container aus `docker/` auf einem kleinen Host (Fly.io, Railway, VPS) mit derselben `DATABASE_URL`
+   betreiben. Kurze, periodische Jobs können alternativ über Vercel Cron laufen. Entscheid mit M2.
+5. **System-Mails:** Absender noch offen (Rückfrage 8): Resend/Brevo mit Domain-Verifizierung (SPF/DKIM für
+   `slingaircraft.ch`) oder SMTP von `info@slingaircraft.ch`. Ohne SMTP werden Reset-Mails nur geloggt.
+
+Grenzen auf Vercel: Server Actions und Route Handler laufen als Functions (Zeitlimit, kein Dateisystem, keine
+Hintergrundprozesse); die Offline-Synchronisation und alle M1-Funktionen sind davon nicht betroffen.
 
 ```
 Internet ──443──▶ caddy (TLS, Reverse-Proxy) ──▶ web (Next.js, Migrationen beim Start)
@@ -80,7 +103,12 @@ Von Hand: `docker compose exec web node dist/migrate.cjs`.
 
 ## 5. Backups
 
-Der Dienst `backup` erstellt täglich (`BACKUP_CRON`, Standard 03:30 Zeitzone `TZ`) einen Dump im
+**Manuelle Sicherung durch den Erbauer (gilt immer, Entscheid 16.10.2026):** Dashboard → «Datensicherung» →
+«Projekt als JSON exportieren». Die Datei (`HB-YMR_Export_<Datum>.json`) enthält Konfiguration, Status aller Seiten,
+Zusatzarbeiten, Fehlteile und den Verlauf, keine PDFs; sie gehört ins Drive des Erbauers. Die App erinnert auf dem
+Dashboard, sobald der letzte Export 3 Tage zurückliegt.
+
+Bei Docker-Betrieb zusätzlich: Der Dienst `backup` erstellt täglich (`BACKUP_CRON`, Standard 03:30 Zeitzone `TZ`) einen Dump im
 PostgreSQL-Custom-Format nach `./backups/<db>-<datum>.dump` und löscht Dumps, die älter als
 `BACKUP_KEEP_DAYS` Tage sind. Zusätzlich sichern:
 

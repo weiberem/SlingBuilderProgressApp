@@ -22,13 +22,14 @@ afterAll(async () => {
 });
 
 describe("Admin: Regeln bestätigen", () => {
-  it("bestätigt eine unbestätigte Regel mit Audit-Eintrag und wirkt danach auf die Seiten", async () => {
+  it("hebt eine Bestätigung auf (Seite wird «klären») und bestätigt wieder, je mit Audit-Eintrag", async () => {
     const catalog = await listAdminCatalog();
     const wing = catalog.flatMap((m) => m.manuals).find((m) => m.manual.code === "wing")!;
-    const unconfirmed = wing.revisions.flatMap((r) => r.rules).filter((r) => !r.confirmed);
-    expect(unconfirmed.length).toBeGreaterThan(0);
-    // Rib 26 (S. 32) «nur 198 L»: HB-YMR hat Long Range → nach Bestätigung fällt die Seite weg.
-    const rule = unconfirmed.find((r) => r.seedKey === "wing-7:s32:198-only")!;
+    const rules = wing.revisions.flatMap((r) => r.rules);
+    expect(rules.some((r) => !r.confirmed), "mindestens eine unbestätigte Regel im Wing (Wig-Wag)").toBe(true);
+    // Rib 26 (S. 32) «nur 198 L» ist seit 16.10.2026 bestätigt: HB-YMR hat Long Range → Seite fällt weg.
+    const rule = rules.find((r) => r.seedKey === "wing-7:s32:198-only")!;
+    expect(rule.confirmed).toBe(true);
     expect(rule.target).toMatchObject({ kind: "section", pageFrom: 32 });
 
     const ctx = await buildProjectContext(adminId, projectId, { isPlatformAdmin: true });
@@ -37,31 +38,28 @@ describe("Admin: Regeln bestätigen", () => {
       return view!.sections.flatMap((s) => s.pages).find((p) => p.page.pageNumber === n)!.status;
     };
     const before = await pageState(32);
-    expect(before.relevant).toBe(true);
-    expect(before.needsVariantDecision).toBe(true);
+    expect(before.relevant).toBe(false);
+    expect(before.needsVariantDecision).toBe(false);
+
+    // Bestätigung aufheben: unbestätigte Regel wirkt nicht, markiert nur «klären».
+    const back = await confirmRule(adminId, rule.id, false);
+    expect(back.confirmed).toBe(false);
+    expect(back.confirmedBy).toBeNull();
+    const mid = await pageState(32);
+    expect(mid.relevant).toBe(true);
+    expect(mid.needsVariantDecision).toBe(true);
 
     const row = await confirmRule(adminId, rule.id, true);
     expect(row.confirmed).toBe(true);
     expect(row.confirmedBy).toBe(adminId);
     expect(row.confirmedAt).toBeInstanceOf(Date);
-
-    const audits = await getDb().select().from(auditLog).where(eq(auditLog.entityId, rule.id));
-    expect(audits).toHaveLength(1);
-    expect(audits[0].action).toBe("confirm");
-    expect(audits[0].projectId).toBeNull();
-    expect(audits[0].userId).toBe(adminId);
-
-    // Bestätigte Regel wirkt: Seite 32 trifft nicht mehr zu, nichts mehr zu klären.
     const after = await pageState(32);
     expect(after.relevant).toBe(false);
     expect(after.needsVariantDecision).toBe(false);
 
-    const back = await confirmRule(adminId, rule.id, false);
-    expect(back.confirmed).toBe(false);
-    expect(back.confirmedBy).toBeNull();
-    const audits2 = await getDb().select().from(auditLog).where(eq(auditLog.entityId, rule.id));
-    expect(audits2.map((a) => a.action).sort()).toEqual(["confirm", "unconfirm"]);
-    expect((await pageState(32)).needsVariantDecision).toBe(true);
+    const audits = await getDb().select().from(auditLog).where(eq(auditLog.entityId, rule.id));
+    expect(audits.map((a) => a.action).sort()).toEqual(["confirm", "unconfirm"]);
+    expect(audits.every((a) => a.projectId === null && a.userId === adminId)).toBe(true);
   });
 
   it("lehnt Nicht-Admins und unbekannte Regeln ab", async () => {

@@ -24,7 +24,12 @@ import { setPageStatus } from "@/modules/progress/service";
  *
  * Idempotent: Seiten mit bereits gesetztem Status werden ohne --force übersprungen; Zusatzarbeiten
  * werden über `external_ref = prototype:<id>` aktualisiert statt dupliziert.
+ *
+ * Der Prototyp speicherte kein Datum des Abhakens. Importierte Seiten tragen deshalb `done_at = null`
+ * («Datum unbekannt», Antwort Remy 16.10.2026). Früher importierte Zeilen mit dem Exportdatum als
+ * Ersatzdatum werden beim erneuten Lauf bereinigt (eigener clientChangeId, einmalig).
  */
+const IMPORT_NOTE = "Importiert aus dem Prototyp (Datum des Abhakens unbekannt).";
 const exportSchema = z.object({
   source: z.string().optional(),
   exportedAt: z.string().optional(),
@@ -74,7 +79,7 @@ async function main() {
   if (!project) throw new Error(`Projekt ${registration} fehlt (zuerst pnpm seed)`);
   const ctx = await buildProjectContext(user.id, project.id, { isPlatformAdmin: user.isPlatformAdmin, userName: user.name });
 
-  const report = { pagesImported: 0, pagesSkippedExisting: 0, pagesNotFound: [] as string[], pagesOpen: 0, tasksCreated: 0, tasksUpdated: 0, pageCountsSet: [] as string[] };
+  const report = { pagesImported: 0, pagesSkippedExisting: 0, pagesDateCleared: 0, pagesNotFound: [] as string[], pagesOpen: 0, tasksCreated: 0, tasksUpdated: 0, pageCountsSet: [] as string[] };
 
   const list = await listManualsWithActiveRevision(db, project.id);
   const byCode = new Map(list.map((l) => [l.manual.code, l]));
@@ -120,16 +125,23 @@ async function main() {
       report.pagesNotFound.push(key);
       continue;
     }
-    if (existingByPage.has(page.id) && !force) {
-      report.pagesSkippedExisting++;
+    const existingRow = existingByPage.get(page.id);
+    if (existingRow && !force) {
+      // Altlast: Ersatzdatum (Exportdatum) aus früheren Importläufen auf «unbekannt» setzen.
+      if (existingRow.status === "done" && existingRow.doneAt && existingRow.note === IMPORT_NOTE) {
+        await setPageStatus(ctx, { pageId: page.id, status: "done", doneAt: null, clientChangeId: `prototype-import:${key}:date-unknown` });
+        report.pagesDateCleared++;
+      } else {
+        report.pagesSkippedExisting++;
+      }
       continue;
     }
     await setPageStatus(ctx, {
       pageId: page.id,
       status: value === "done" ? "done" : "not_applicable",
       naReason: value === "na" ? "manual" : null,
-      note: "Importiert aus dem Prototyp (Datum des Abhakens unbekannt).",
-      doneAt: data.exportedAt ?? null,
+      note: IMPORT_NOTE,
+      doneAt: null,
       clientChangeId: `prototype-import:${key}`,
     });
     report.pagesImported++;

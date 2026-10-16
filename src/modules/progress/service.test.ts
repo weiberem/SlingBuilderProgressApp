@@ -42,25 +42,27 @@ describe("HB-YMR Applicability", () => {
     const wing = await getManualView(ctx, "wing");
     const relevant = new Set(pageNumbers(wing!, (s) => s.relevant));
     for (const n of [18, 31, 33, 43, 44, 45, 46, 47, 48, 49, 53]) expect(relevant.has(n), `Seite ${n}`).toBe(true);
-    expect(wing!.progress.relevant).toBe(67);
+    // Rib 26 (S. 32) gilt nur ohne Long Range (bestätigt 16.10.2026) → fällt für HB-YMR weg.
+    expect(pageNumbers(wing!, (s) => !s.relevant)).toContain(32);
+    expect(wing!.progress.relevant).toBe(66);
     const clarify = pageNumbers(wing!, (s) => s.needsVariantDecision);
-    expect(clarify).toEqual([22, 32]);
+    expect(clarify).toEqual([22]);
   });
 
-  it("Canopy: Parachute-Seite fällt weg, Versionsseiten bleiben als «klären»", async () => {
+  it("Canopy: Parachute-Seite und Seiten älterer Versionen fallen weg (Version 2023), nichts zu klären", async () => {
     const can = await getManualView(ctx, "canopy");
-    expect(pageNumbers(can!, (s) => !s.relevant)).toEqual([6]);
-    expect(pageNumbers(can!, (s) => s.needsVariantDecision)).toEqual([5, 7, 8, 9, 25, 26, 27, 28]);
+    expect(pageNumbers(can!, (s) => !s.relevant)).toEqual([6, 7, 8, 9]);
+    expect(pageNumbers(can!, (s) => s.needsVariantDecision)).toEqual([]);
     expect(can!.revision.importReport.conflicts.length).toBeGreaterThan(0);
   });
 
-  it("Finishing: Parachute-Seiten fallen weg, Autopilot-Seiten bleiben; QB-Hinweis ohne Build-Art → klären", async () => {
+  it("Finishing: Parachute-Seiten fallen weg, Autopilot-Seiten bleiben; kein QB-Hinweis (Erbauer macht das Finishing immer selbst)", async () => {
     const fin = await getManualView(ctx, "finishing");
     expect(pageNumbers(fin!, (s) => !s.relevant)).toEqual([26, 27, 28, 29, 30, 31, 32, 33]);
     const relevant = new Set(pageNumbers(fin!, (s) => s.relevant));
     for (const n of [7, 8, 9, 10]) expect(relevant.has(n)).toBe(true);
-    // Build-Art unbekannt und QB-Hinweis vorhanden → Klärung nötig
-    expect(fin!.progress.needsVariantDecision).toBe(fin!.progress.relevant);
+    expect(fin!.progress.needsVariantDecision).toBe(0);
+    expect(fin!.sections.flatMap((s) => s.pages).every((p) => p.page.quickBuild === "none")).toBe(true);
   });
 
   it("Übersicht: Fuselage/FWF/Electrics ohne Struktur, Introduction ohne Seiten", async () => {
@@ -69,7 +71,7 @@ describe("HB-YMR Applicability", () => {
     expect(byCode.fuselage.hasStructure).toBe(false);
     expect(byCode.fwf.hasStructure).toBe(false);
     expect(byCode.empennage.progress?.relevant).toBe(27);
-    expect(ov.total.relevant).toBe(27 + 67 + 14 + 27 + 50 + 12);
+    expect(ov.total.relevant).toBe(27 + 66 + 14 + 24 + 50 + 12); // Canopy: 3 Seiten älterer Versionen weg
   });
 
   it("Alias: Motorbezeichnung aus Projektkonfiguration", async () => {
@@ -128,10 +130,13 @@ describe("Konfiguration ändern", () => {
     expect(removed).toEqual([19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 30, 31]); // Seite 18 ist manuell «done»
   });
 
-  it("Canopy-Version beantworten löst «klären» auf", async () => {
-    await saveProjectOption(ctx, "canopy_version", { codes: ["2023"] });
+  it("Canopy-Version auf «weiss ich nicht» → Versionsseiten bleiben sichtbar und «klären»", async () => {
+    await saveProjectOption(ctx, "canopy_version", { unknown: true });
     const can = await getManualView(ctx, "canopy");
-    expect(pageNumbers(can!, (s) => !s.relevant)).toEqual([6, 7, 8, 9]);
-    expect(pageNumbers(can!, (s) => s.needsVariantDecision)).toEqual([]);
+    expect(pageNumbers(can!, (s) => !s.relevant)).toEqual([6]);
+    expect(pageNumbers(can!, (s) => s.needsVariantDecision)).toEqual([5, 7, 8, 9, 25, 26, 27, 28]);
+    await saveProjectOption(ctx, "canopy_version", { codes: ["2023"] });
+    const again = await getManualView(ctx, "canopy");
+    expect(pageNumbers(again!, (s) => s.needsVariantDecision)).toEqual([]);
   });
 });

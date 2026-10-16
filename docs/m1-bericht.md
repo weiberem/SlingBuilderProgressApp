@@ -52,14 +52,14 @@ und was ungeklärt ist. Offene Fragen an Remy stehen in `docs/rueckfragen.md`.
 - **Fotos pro Seite** fehlen (brauchen Google Drive, M4). Die Tabelle `page_photos` ist noch nicht angelegt.
 - **Bauberater-Visa** werden angezeigt, aber es gibt noch keine Eingabe (kein Advisor-Login in Phase 1); kommt mit dem EAS-Modul.
 - Fehlteile lassen sich nach dem Anlegen nur im Status ändern oder löschen, nicht bearbeiten; keine manuelle Sortierung von Zusatzarbeiten.
-- Importierte Seiten tragen als «erledigt am» den 15.10.2026, weil der Prototyp keine Daten speicherte (Notiz weist darauf hin).
+- Importierte Seiten tragen kein «erledigt am» (Datum unbekannt, Entscheid 16.10.2026), weil der Prototyp keine Daten speicherte (Notiz weist darauf hin).
 - Design (nachgetragen 16.10.2026): auf das Design-System «Sling Aircraft Switzerland» umgestellt (dark-first, Sling-Rot, Inter, SVG-Logo); Tokens in `src/styles/tokens.css`.
 
 ## Was ungeklärt ist
 
-- Build-Art je Baugruppe, Canopy-Version, Lichter, Wing S. 32 (Rib 26), Finishing-QB-Hinweis, Motor-Anzeige: siehe Rückfrage 6.
-  Bis zur Antwort bleiben 60 Seiten als «Variante klären» markiert (8 Canopy, 50 Finishing wegen Build-Art, 2 Wing).
-- Hosting, Gmail-Variante, Sendungsverfolgung, fehlende EAS-PDFs, SMTP-Absender: Rückfragen 1–4 und 8.
+- Stand 16.10.2026 (nach Remys Antworten): Canopy-Version 2023 gesetzt, Rib 26 (Wing S. 32) bestätigt, Finishing ohne QB-Hinweis.
+  Offen bleiben Build-Art je Baugruppe und Lichter (Wing S. 22 bleibt «klären»); siehe «Antworten» und «Offen» in `docs/rueckfragen.md`.
+- Hosting ist entschieden (Vercel + EU-Postgres, noch nicht eingerichtet); offen: Mail-Absender, Fuselage/FWF-Seitenzahlen, Elektrik-Geräteliste (siehe `docs/elektrik-hb-ymr.md`).
 - Next.js 17 wird «Cache Components» voraussichtlich verbindlich machen; die App läuft bewusst noch im klassischen Modell (eigener späterer Schritt).
 
 ## Nächste Schritte (M2)

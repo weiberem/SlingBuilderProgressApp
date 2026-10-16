@@ -23,7 +23,7 @@ Offene Entscheidungen stehen in `docs/rueckfragen.md`.
 | UI | Tailwind CSS 4, eigene kleine Komponenten, Design-Tokens in `src/styles/tokens.css` | Design nach Sling Aircraft Switzerland (siehe 9). Grosse Touch-Ziele. |
 | PWA / Offline | Web-App-Manifest, Service Worker (Serwist-Runtime, separat mit esbuild gebündelt), **Offline-Warteschlange in IndexedDB (Dexie)**, idempotenter Sync-Endpunkt | Abhaken im Hangar ohne Netz; Synchronisation später. |
 | PDF | `poppler-utils` (pdftotext, pdftoppm), `ocrmypdf`/Tesseract im Worker-Container; Seitenbilder on demand | Vorgabe. PDFs werden nie zentral gespeichert (nur temporär während der Aufbereitung). |
-| Hosting | Docker Compose (`web`, `worker`, `db`, `caddy`, `backup`) | Lokal und auf einem kleinen VPS identisch. Datenstandort frei wählbar (CH/EU). |
+| Hosting | **Vercel** (Remy hat bereits ein Konto) für `web`, **PostgreSQL in der EU** als verwalteter Dienst (Vorschlag: Supabase, Region Frankfurt), Subdomain von `slingaircraft.ch`; Docker Compose (`web`, `worker`, `db`, `caddy`, `backup`) bleibt als gleichwertige Alternative für VPS oder lokal | Entscheid 16.10.2026: Datenschutz unkritisch, EU in Ordnung. Der `worker` (PDF-Import, OCR, Mail-Sync ab M2/M4) läuft nicht auf Vercel-Functions; dafür ein kleiner Container (Fly.io/Railway/VPS) oder Vercel Cron für kurze Jobs – Entscheid mit M2. |
 | Tests | Vitest (Engines, Services gegen PGlite/Postgres), Playwright (Onboarding, Abhaken) | Kritische Logik = Applicability, Alias, Revisions-Mapping. |
 
 Next.js 16 wird **ohne** `cacheComponents` betrieben (klassisches, pro Request dynamisches Rendering), weil die App vollständig privat und datengetrieben ist. Next 17 wird «Cache Components» voraussichtlich verbindlich machen; die Migration (Suspense-Grenzen um dynamische Daten, `loading.tsx`) ist ein eigener, späterer Schritt und ändert keine Fachlogik. `middleware.ts` heisst in Next 16 `proxy.ts` und macht nur den optimistischen Cookie-Check; die echte Autorisierung passiert in der Datenzugriffsschicht.
@@ -235,8 +235,8 @@ docker compose: caddy (TLS, Reverse Proxy) → web (Next.js) ; worker (pg-boss, 
 
 - Ein `.env` mit `DATABASE_URL`, `APP_ENCRYPTION_KEY`, SMTP, OAuth-Client-IDs.
 - Migrationen laufen beim Start von `web`, Seeds per Kommando (`pnpm seed`), idempotent.
-- Backups: täglicher Dump, 30 Tage Rotation, Wiederherstellung dokumentiert und vierteljährlich getestet.
-- Vorschlag für den Standardbetrieb (siehe Rückfrage 1): Infomaniak VPS Lite in der Schweiz (2 vCPU, 4 GB) plus Infomaniak Swiss Backup, zusammen rund CHF 12 pro Monat; Alternativen EU-VPS oder lokal mit Cloudflare Tunnel. Lokal identisch mit Docker Desktop oder Podman.
+- Backups: **vorerst manuell** (Entscheid 16.10.2026). Die App bietet einen vollständigen JSON-Export des Projekts (`/api/p/<id>/export.json`, `src/modules/projects/export-service.ts`) und erinnert auf dem Dashboard, sobald der letzte Export 3 Tage zurückliegt; die Datei legt der Erbauer in seinem Drive ab. Bei Docker-Betrieb zusätzlich täglicher Dump mit 30 Tagen Rotation. Ein automatisches Backup des verwalteten Postgres (Supabase: täglich, 7 Tage im Pro-Plan) kommt dazu, sobald das Hosting steht.
+- Zielbetrieb (Entscheid 16.10.2026): Vercel für die Web-App, verwaltetes PostgreSQL in der EU, Subdomain von `slingaircraft.ch` (DNS-Eintrag auf Vercel). Der Docker-Compose-Stack (Infomaniak/EU-VPS oder lokal) bleibt lauffähig und dokumentiert in `docs/betrieb.md`.
 
 ## 8. Design
 
@@ -281,4 +281,5 @@ Bedienung: Touch-Ziele mindestens 48 px, Seiten-Chips 56 px, Kontrast AA in beid
 | M3 | Bestell-Mails auslesen, Tracking, Rechnungen, Kostenübersicht | 3.5, 6 (TrackingProvider) |
 | M4 | Dropbox → Drive-Sync, Import-Pipeline mit Review, Alias-Engine im Admin, Revisionswechsel mit Diff | 3.2, 3.4, 4.3, 4.4 |
 | M5 | EAS-Modul mit OneDrive | 3.5 (eas), 6 |
-| M6 | Export, Audit-Log-Ansicht | 3.3 |
+| M6 | Export (JSON-Export ist seit 16.10.2026 vorgezogen), Audit-Log-Ansicht | 3.3 |
+| M7 (neu, 16.10.2026) | **Meilensteinkalender**: Rückwärtsplanung ab Zielterminen (z. B. AERO Friedrichshafen April 2027, Oshkosh Juli 2027) über Baugruppen, EAS-Fristen und Flugerprobung; Kalender-/Zeitstrahl-Ansicht in der App, Export als PDF für A3/A2-Druck. Umfang und Reihenfolge (vor oder nach M5) mit Remy festlegen. | 3.5 (eas), neu |

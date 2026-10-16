@@ -133,7 +133,7 @@ function localToday(): string {
 export function nextStoredStatus(existing: StoredStatusDto | null, input: Omit<PageStatusPayload, "pageId">): StoredStatusDto {
   const naReason = input.status === "not_applicable" ? (input.naReason ?? "manual") : null;
   const doneAt =
-    input.status === "done" ? (input.doneAt ?? existing?.doneAt ?? localToday()) : input.status === "open" ? null : (existing?.doneAt ?? null);
+    input.status === "done" ? (input.doneAt !== undefined ? input.doneAt : (existing?.doneAt ?? localToday())) : input.status === "open" ? null : (existing?.doneAt ?? null);
   const note = input.note === undefined ? (existing?.note ?? null) : input.note;
   return { status: input.status, naReason, doneAt, note };
 }

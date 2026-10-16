@@ -13,5 +13,16 @@
     "noPages": "Keine abhakbaren Seiten",
     "structureMissing": "Seiten noch nicht erfasst",
     "noRevision": "Keine freigegebene Revision"
+  },
+  "backup": {
+    "title": "Datensicherung",
+    "lead": "Deine Daten gehören dir. Solange kein automatisches Backup läuft, exportiere den Projektstand regelmässig als JSON-Datei und lege sie in deinem Drive ab.",
+    "last": "Letzter Export: {date}",
+    "never": "Noch nie exportiert.",
+    "dueNever": "Bitte jetzt einen ersten Export machen.",
+    "due": "{days, plural, =1 {Der letzte Export ist 1 Tag her} other {Der letzte Export ist # Tage her}} – bitte wieder exportieren.",
+    "ok": "{days, plural, =0 {Heute exportiert} =1 {Vor 1 Tag exportiert} other {Vor # Tagen exportiert}}; nächste Erinnerung nach {reminderDays} Tagen.",
+    "download": "Projekt als JSON exportieren",
+    "contains": "Enthält Konfiguration, Status aller Seiten, Zusatzarbeiten, Fehlteile und Verlauf. Keine PDFs."
   }
 }

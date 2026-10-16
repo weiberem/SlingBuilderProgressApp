@@ -50,12 +50,14 @@ test("Abschnitt erledigen und zurücksetzen", async ({ page }) => {
   await expect(page.getByRole("button", { name: new RegExp(`^${chipName(19, "open")}`) })).toBeVisible();
 });
 
-test("MATCO-Seiten sind nicht zutreffend, Canopy-Versionsseiten sind zu klären", async ({ page }) => {
+test("MATCO-Seiten sind nicht zutreffend, Canopy-Seiten älterer Versionen fallen weg, Wig-Wag-Seite ist zu klären", async ({ page }) => {
   const projectId = await login();
   await page.goto(`/p/${projectId}/manuals/undercarriage`);
   await expect(page.getByRole("button", { name: new RegExp(`^${chipName(1, "not_applicable")}`) })).toBeVisible();
   await page.goto(`/p/${projectId}/manuals/canopy`);
-  await expect(page.getByRole("button", { name: new RegExp(`^${chipName(5, "open")}.*${manual.chip.clarify}`) })).toBeVisible();
+  await expect(page.getByRole("button", { name: new RegExp(`^${chipName(7, "not_applicable")}`) })).toBeVisible();
+  await page.goto(`/p/${projectId}/manuals/wing`);
+  await expect(page.getByRole("button", { name: new RegExp(`^${chipName(22, "done")}.*${manual.chip.clarify}`) })).toBeVisible();
 });
 
 test("Zusatzarbeit anlegen, erledigen, löschen", async ({ page }) => {
@@ -68,7 +70,10 @@ test("Zusatzarbeit anlegen, erledigen, löschen", async ({ page }) => {
   await form.getByLabel(tasks.form.category).fill("E2E");
   await form.getByRole("button", { name: tasks.form.submit }).click();
   await expect(page.getByText(title)).toBeVisible();
+  // Erst navigieren, wenn die Server Action (Erledigen) geantwortet hat; sonst bricht der Seitenwechsel sie ab.
+  const toggled = page.waitForResponse((r) => r.request().method() === "POST" && r.ok());
   await page.getByRole("checkbox", { name: tasks.item.markDone.replace("{title}", title) }).click();
+  await toggled;
   await page.goto(`/p/${projectId}/tasks?filter=done`);
   const item = page.locator("li, article, div").filter({ hasText: title }).last();
   await expect(item).toBeVisible();

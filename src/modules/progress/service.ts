@@ -223,7 +223,9 @@ export async function setPageStatus(ctx: ProjectContext, input: SetPageStatusInp
       if (existing) return existing;
     }
     const naReason = input.status === "not_applicable" ? (input.naReason ?? "manual") : null;
-    const doneAt = input.status === "done" ? (input.doneAt ?? existing?.doneAt ?? today()) : input.status === "open" ? null : (existing?.doneAt ?? null);
+    // `doneAt: null` ist eine bewusste Angabe («Datum unbekannt», z. B. Prototyp-Import); nur `undefined` fällt auf bestehendes Datum oder heute zurück.
+    const doneAt =
+      input.status === "done" ? (input.doneAt !== undefined ? input.doneAt : (existing?.doneAt ?? today())) : input.status === "open" ? null : (existing?.doneAt ?? null);
     const note = input.note === undefined ? (existing?.note ?? null) : input.note;
     const values = { status: input.status, naReason, doneAt, note, updatedBy: ctx.userId };
     const [row] = await tx
