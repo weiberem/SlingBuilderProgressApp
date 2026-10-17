@@ -4,6 +4,8 @@ import { spawnSync } from "node:child_process";
  * Build-Schritt für Vercel (`vercel-build` in package.json, wird von Vercel statt `build` ausgeführt):
  * 1. Migrationen anwenden, wenn eine Datenbank konfiguriert ist (DIRECT_DATABASE_URL bevorzugt, sonst DATABASE_URL).
  * 2. Stammdaten und ersten Nutzer säen (idempotent), wenn SEED_ADMIN_EMAIL/-PASSWORD gesetzt sind.
+ *    Mit SEED_IMPORT_PROTOTYPE=<Pfad> (z. B. seed/hb-ymr/prototype-export-2026-10-15.json) zusätzlich den
+ *    Prototyp-Stand importieren (idempotent: bereits gesetzte Seiten werden übersprungen).
  * 3. Service Worker bündeln und `next build`.
  * Ohne Datenbank-URL werden Schritt 1 und 2 übersprungen, der Build läuft trotzdem (Vorschau-Deployments).
  */
@@ -19,6 +21,9 @@ if (directUrl) {
   run("pnpm", ["exec", "tsx", "scripts/migrate.ts"], { DATABASE_URL: directUrl, MIGRATE_WAIT_SECONDS: "20" });
   if (process.env.SEED_ADMIN_EMAIL && process.env.SEED_ADMIN_PASSWORD) {
     run("pnpm", ["exec", "tsx", "seed/run.ts"], { DATABASE_URL: directUrl });
+    if (process.env.SEED_IMPORT_PROTOTYPE) {
+      run("pnpm", ["exec", "tsx", "seed/import-prototype.ts", process.env.SEED_IMPORT_PROTOTYPE], { DATABASE_URL: directUrl });
+    }
   } else {
     console.log("SEED_ADMIN_EMAIL/SEED_ADMIN_PASSWORD nicht gesetzt: Seed übersprungen.");
   }

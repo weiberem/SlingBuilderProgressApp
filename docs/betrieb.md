@@ -29,8 +29,9 @@ sät Stammdaten und ersten Nutzer (idempotent, nur wenn `SEED_ADMIN_*` gesetzt) 
    - `APP_ENCRYPTION_KEY` (`openssl rand -base64 32`), `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD` (mindestens 8 Zeichen,
      nach dem ersten Login ändern), `SEED_ADMIN_NAME`.
    - SMTP-Variablen, sobald der Absender feststeht (Rückfrage 8); ohne SMTP werden Reset-Mails nur geloggt.
-5. **Redeploy.** Danach `/login` aufrufen; Anmeldung mit `SEED_ADMIN_*`. Den Prototyp-Stand einmalig übernehmen:
-   lokal `DATABASE_URL=<direkte URL> pnpm import:prototype seed/hb-ymr/prototype-export-2026-10-15.json`.
+5. **Redeploy.** Danach `/login` aufrufen; Anmeldung mit `SEED_ADMIN_*`. Den Prototyp-Stand übernimmt der Build, wenn
+   `SEED_IMPORT_PROTOTYPE=seed/hb-ymr/prototype-export-2026-10-15.json` gesetzt ist (idempotent, kann gesetzt bleiben);
+   alternativ lokal `DATABASE_URL=<direkte URL> pnpm import:prototype seed/hb-ymr/prototype-export-2026-10-15.json`.
 
 Reihenfolge für die vollständige Einrichtung:
 
